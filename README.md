@@ -67,7 +67,7 @@ $ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7b
 | 8854ic9fQM4K2FxZs8amkZcmktM6MnRGhTM3Mfoho8DPT63xNKt8gZsbXKoquC7zfGMAAJTzkhbRR52fGAPTkjyd91Ua4z2 |           1 |
 | 83PWdoFpvz8iFfXX7HnG9Q3xuqddMnhAg3amhH1TmfZcYcS6Q62dXU5aXkiHEhp79mVcN83bs7o7D3E8Yo9aNE7fD6h6Ttf |           2 |
 +-------------------------------------------------------------------------------------------------+-------------+```
-
+```
 
 # How address derivation works
 
