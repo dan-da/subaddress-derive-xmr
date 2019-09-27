@@ -84,109 +84,40 @@ class WalletDerive
         ];
     }
 
-/***
- *  Obsolete.  From hd-wallet-derive.  using bitwasp/bitcoin-php lib.
- *  needs to be re-implemented for monero.
- *  
     protected function genRandomSeed($password=null) {
         $params = $this->get_params();
-        $num_bytes = (int)($params['gen-words'] / 0.75);
         
-        // generate random mnemonic
-        $random = new Random();
-        $bip39 = MnemonicFactory::bip39();
-        $entropy = $random->bytes($num_bytes);
-        $mnemonic = $bip39->entropyToMnemonic($entropy);
-
-        // generate seed and master priv key from mnemonic
-        $seedGenerator = new Bip39SeedGenerator();
-        $pw = $password == null ? '' : $password;
-        $seed = $seedGenerator->getSeed($mnemonic, $pw);
-
+        $cn = new MoneroPHP\Cryptonote();
+        $seed = $cn->gen_new_hex_seed();
+        
         $data = [
             'seed' => $seed,
-            'mnemonic' => $mnemonic,
+            'mnemonic' => 'unimplemented',   // $mnemonic,
         ];
         
         return $data;
     }
         
-    protected function genKeysFromSeed($coin, $seedinfo) {
-        $networkCoinFactory = new NetworkCoinFactory();
-        $network = $networkCoinFactory->getNetworkCoinInstance($coin);
-        Bitcoin::setNetwork($network);
+    protected function genKeysFromSeed($seedinfo) {
         
-                    // type   purpose        
-        $key_types = ['x'  => 44,
-                      'y'  => 49,
-                      'z'  => 84,
-//                      'Y'  => ??,    // multisig
-//                      'Z'  => ??,    // multisig
-                     ];
-        $keys = [];
+        $cn = new MoneroPHP\Cryptonote();
+        $priv = $cn->gen_private_keys($seedinfo['seed']);
         
-        $rows = [];
-        foreach($key_types as $key_type => $purpose) {
-            if( !$this->networkSupportsKeyType($network, $key_type, $coin) ) {
-                // $data[$key_type] = null;
-                continue;
-            }
-            $row = ['coin' => $this->normalizeCoin($coin),
-                    'seed' => $seedinfo['seed']->getHex(),
-                    'mnemonic' => $seedinfo['mnemonic']
-                   ];
+        $data = ['seed' => $seedinfo['seed'],
+                 'mnemonic' => $seedinfo['mnemonic'],
+                 'view-key-private' => $priv['viewKey'],
+                 'view-key-public' => $cn->pk_from_sk($priv['viewKey']),
+                 'spend-key-private' => $priv['spendKey'],
+                 'spend-key-public' => $cn->pk_from_sk($priv['spendKey']),
+        ];
             
-            $k = $key_type;
-            $pf = '';
-            
-            $scriptFactory = $this->getScriptDataFactoryForKeyType($key_type);  // xpub
+        return $data;
+    }
 
-            $xkey = $this->hkf->fromEntropy($seedinfo['seed'], $scriptFactory);
-            $masterkey = $this->toExtendedKey($coin, $xkey, $network, $key_type);
-            $row[$pf . 'root-key'] = $masterkey;
-    
-            // determine bip32 path for ext keys, which requires a bip44 ID for coin.
-            $bip32path = $this->getCoinBip44ExtKeyPathPurpose($coin, $purpose);
-            if($bip32path) {
-                // derive extended priv/pub keys.
-                $prv = $xkey->derivePath($bip32path);
-                $pub = $prv->withoutPrivateKey();
-                $row[$pf . 'path'] = $bip32path;
-                $row['xprv'] = $this->toExtendedKey($coin, $prv, $network, $key_type);
-                $row['xpub'] = $this->toExtendedKey($coin, $pub, $network, $key_type);
-                $row['comment'] = null;
-            }
-            else {
-                $row[$pf . 'path'] = null;
-                $row['xprv'] = null;
-                $row['xpub'] = null;
-                $row['comment'] = "Bip44 ID is missing for this coin, so extended keys not derived.";
-            }
-            $rows[] = $row;
-        }
-        return $rows;
-    }
-    
-    public function genRandomKeyForNetwork($coin) {
+    public function genRandomKeys() {
         $seedinfo = $this->genRandomSeed();
-        return $this->genKeysFromSeed($coin, $seedinfo);
+        return $this->genKeysFromSeed($seedinfo);
     }
-    
-    public function genRandomKeyForAllChains() {
-        $seedinfo = $this->genRandomSeed();
-        
-        $allcoins = NetworkCoinFactory::getNetworkCoinsList();
-        $rows = [];
-        echo "Deriving keys... ";
-        foreach($allcoins as $coin => $data) {
-            echo "$coin, ";
-            $rows = array_merge( $rows, $this->genKeysFromSeed($coin, $seedinfo));
-        }
-        echo "\n\n";
-        return $rows;
-    }
-    
-*/
     
     /* Returns all columns available for reports
      */
@@ -204,7 +135,7 @@ class WalletDerive
      */
     static public function all_cols_genkey()
     {
-        return ['seed', 'mnemonic', 'root-key', 'path', 'xprv', 'xpub', 'comment'];
+        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public'];
     }
     
     
@@ -219,7 +150,7 @@ class WalletDerive
      */
     static public function default_cols_genkey()
     {
-        return ['coin', 'seed', 'mnemonic', 'root-key', 'path', 'xprv', 'xpub', 'comment'];
+        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public'];
     }
     
 }

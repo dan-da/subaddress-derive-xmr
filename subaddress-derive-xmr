@@ -40,8 +40,8 @@ function main()
         // Creates WalletDerive object
         $walletDerive = new WalletDerive($params);
         if($params['gen-key']) {
-            $result = $walletDerive->genRandomKeyForNetwork($params['coin']);
-            WalletDeriveReport::printResults($params, $result);
+            $result = $walletDerive->genRandomKeys();
+            WalletDeriveReport::printResults($params, [$result]);
             return 0;
         }
 

@@ -53,9 +53,10 @@ class Util
             return [$params, 2];
         }
 
+        $params['gen-key'] = isset($params['gen-key']) || isset($params['gen-words']);
         $params['cols'] = @$params['cols'] ?: null;
         $params['cols'] = static::getCols( $params );
-        $params['format'] = @$params['format'] ?: 'txt';
+        $params['format'] = @$params['format'] ?: ($params['gen-key'] ? 'jsonpretty' : 'txt');
         
         if(isset($params['help']) || !isset($params['g'])) {
             static::printHelp();
@@ -71,16 +72,12 @@ class Util
         $loglevel = @$params['loglevel'] ?: 'specialinfo';
         MyLogger::getInstance()->set_log_level_by_name( $loglevel );
 
-        $params['gen-key'] = isset($params['gen-key']) || isset($params['gen-words']);
         $view_key = @$params['view-key'];
         $spend_key = @$params['spend-key'];
         $mnemonic = @$params['mnemonic'];
         
         if(@$params['mnemonic']) {
             throw new Exception("Sorry, --mnemonic has not been implemented yet.");
-        }
-        if(@$params['gen-key']) {
-            throw new Exception("Sorry, --gen-key has not been implemented yet.");
         }
         if(@$params['gen-words']) {
             throw new Exception("Sorry, --gen-words has not been implemented yet.");
@@ -201,7 +198,7 @@ END;
         $arg = static::stripWhitespace( @$params['cols'] ?: null );
 
         $allcols = [];
-        if( isset($params['gen-key'])) {
+        if( $params['gen-key']) {
             $allcols = WalletDerive::all_cols_genkey();
         }
         else {
@@ -212,7 +209,7 @@ END;
             $cols = $allcols;
         }
         else if( !$arg ) {
-            $cols = @$params['gen-key'] ? WalletDerive::default_cols_genkey() : WalletDerive::default_cols();
+            $cols = $params['gen-key'] ? WalletDerive::default_cols_genkey() : WalletDerive::default_cols();
         }
         else {
             $cols = explode( ',', $arg );
@@ -223,7 +220,6 @@ END;
                 }
             }
         }
-
         return $cols;
     }
 
