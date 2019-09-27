@@ -40,9 +40,9 @@ $ subaddress-derive-xmr --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f0
 
 For this, we use the --majorindex flag.
 
-subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 -g
-
 ```
+$ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 -g
+
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 | major_index | minor_index | subaddress                                                                                      |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
@@ -58,7 +58,7 @@ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7
 Just use the --cols parameter.
 
 ```
-subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 --cols=subaddress,minor_index -g
+$ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 --cols=subaddress,minor_index -g
 
 +-------------------------------------------------------------------------------------------------+-------------+
 | subaddress                                                                                      | minor_index |
@@ -175,7 +175,7 @@ apt-get install php php-gmp php-mbstring php-mcrypt
 
 Try an example
 ```
-$ subaddress-derive-xmr --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' -g
+$ ./subaddress-derive-xmr --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' -g
 ```
 
 
