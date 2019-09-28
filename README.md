@@ -1,13 +1,13 @@
-**subaddress-derive-xmr is a command-line tool that derives monero subaddresses**
+**subaddress-derive-xmr is a command-line tool that generates and derives monero addresses**
 
 # About
+
+This tool can be used to generate a monero address and/or derive subaddresses offline
+without installing full monero software.
 
 Derivation reports show major index (account ID), subaddress index, and subaddress.
 
 Input must be a private view key and a public spend key.
-
-This tool can be used to derive monero subaddresses offline and without installing
-full monero software.
 
 Reports are available in json, plaintext, and html. Columns can be changed or
 re-ordered via command-line.
