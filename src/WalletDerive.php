@@ -43,8 +43,8 @@ class WalletDerive
         
         $major_index = $params['majorindex'];
         
-        $view_secret_key = $params['view-key'];
-        $spend_public_key = $params['spend-key'];
+        $view_secret_key = $params['view-priv'];
+        $spend_public_key = $params['spend-pub'];
         
         MyLogger::getInstance()->log( "Deriving keys", MyLogger::info );
         
@@ -103,12 +103,16 @@ class WalletDerive
         $cn = new MoneroPHP\Cryptonote();
         $priv = $cn->gen_private_keys($seedinfo['seed']);
         
+        $view_key_public = $cn->pk_from_sk($priv['viewKey']);
+        $spend_key_public = $cn->pk_from_sk($priv['spendKey']);
+        
         $data = ['seed' => $seedinfo['seed'],
                  'mnemonic' => $seedinfo['mnemonic'],
                  'view-key-private' => $priv['viewKey'],
-                 'view-key-public' => $cn->pk_from_sk($priv['viewKey']),
+                 'view-key-public' => $view_key_public,
                  'spend-key-private' => $priv['spendKey'],
-                 'spend-key-public' => $cn->pk_from_sk($priv['spendKey']),
+                 'spend-key-public' => $spend_key_public,
+                 'address' => $cn->encode_address($spend_key_public, $view_key_public),
         ];
             
         return $data;
@@ -135,7 +139,7 @@ class WalletDerive
      */
     static public function all_cols_genkey()
     {
-        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public'];
+        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
     }
     
     
@@ -150,7 +154,7 @@ class WalletDerive
      */
     static public function default_cols_genkey()
     {
-        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public'];
+        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
     }
     
 }

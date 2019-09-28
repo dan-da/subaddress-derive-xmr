@@ -19,20 +19,35 @@ deriving Bitcoin HD-Wallet addresses.
 
 # Let see some examples
 
-First, you need to obtain your private view key and public spend key.  Once you have them:
+## Generate new keys and master address
+
+```
+$ ./subaddress-derive-xmr --gen-key  -g
+{
+    "seed": "66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273",
+    "mnemonic": "unimplemented",
+    "view-key-private": "25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a",
+    "view-key-public": "603ebe3bc1b2590c8a5e4caa90ee807cada4f881ad4f21f6c3653459781034c0",
+    "spend-key-private": "eb1003ead738b471f5668a2e00e4f20e795ce70586298e2cc09455de1ae95203",
+    "spend-key-public": "dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974",
+    "address": "49zf2PF7nLSHpRwWcPG8ePHxYnR6eFmYuKG8Akpq5vFALTzZzMdv3kC36fCSP3UfFdMrY51QAs5NGiGuwXK6YMa3Nk7549x"
+}
+```
+
 
 ## Derive subaddresses
 
+For deriving subaddresses we use the private view key and the public spend key.
 
 ```
-$ subaddress-derive-xmr --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 -g
+./subaddress-derive-xmr --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
 
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 | major_index | minor_index | subaddress                                                                                      |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
-|           0 |           0 | 8BFkheDYAXMU7aqrxgBwkNGAxS9bpRYimWcBoVxfhjtkJTugpaV8yYpePzrvEcTdb1KyDnAFk3yf4cs2db4EBfeeSC4sBak |
-|           0 |           1 | 88AAbbFDZruJkAyAZu1hXoK2sDXkm1MEMZhfx5DnqYjS1QNyvcCSxmCPY64pnD853V9gNJenKyDL6Nt37vx5jgBKKg6S9bc |
-|           0 |           2 | 8B1nzov38yZfJozwLjf7NzPTUARcyBh7d4WQprLMQnBrcxBf6rhwXdpUS9dNyqCXpVMrRxbN2aE23EiUDHz8zR1YTXUAwcR |
+|           0 |           0 | 85aUAFTYV3QSatbrvdb2AJDiJ5dSNNeKS53LHewD2crtbArdd9CwPQjaBviDPZKrkj8ZKLfr1ugX8hKyRp425fjVJAsoE8G |
+|           0 |           1 | 87i7kA61fNvMboXiYWHVygPAggKJPETFqLXXcdH4mQTrECvrTxZMtt6e6owj1k8jUVjNR11eBuBMWHFBtxAwEVcm9dcSUxr |
+|           0 |           2 | 8A9XmWsATrhfedtNhTMNKELwfCwMVAk2iVTdUJdFRb2AC4tV4VeBjsCLYR9cSQTwnvLo4MAuQFMLP6Si4xp6t6BS788db3t |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 ```
 
@@ -41,14 +56,14 @@ $ subaddress-derive-xmr --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f0
 For this, we use the --majorindex flag.
 
 ```
-$ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 -g
+./subaddress-derive-xmr --majorindex=1 --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
 
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 | major_index | minor_index | subaddress                                                                                      |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
-|           1 |           0 | 881oaqSBkr81GtAGvoyJ6k7phLRmjChcrLWXVGPfYf6ebGazbUf6BoCXNAENBU2uKSg7F8579SMTFNe48V8G4KdxLaU9zXh |
-|           1 |           1 | 8854ic9fQM4K2FxZs8amkZcmktM6MnRGhTM3Mfoho8DPT63xNKt8gZsbXKoquC7zfGMAAJTzkhbRR52fGAPTkjyd91Ua4z2 |
-|           1 |           2 | 83PWdoFpvz8iFfXX7HnG9Q3xuqddMnhAg3amhH1TmfZcYcS6Q62dXU5aXkiHEhp79mVcN83bs7o7D3E8Yo9aNE7fD6h6Ttf |
+|           1 |           0 | 87G36SRd8Ru9YG9xXjq3i7hAiHTEpVfRdjZEqn5KcWk28oFbEaNWDCiJTcL9BqrZQ8cFtonzJY3zz3LsTT95wdunQhRqW5g |
+|           1 |           1 | 88jg9HNvkisAYFz9J3gr9H4jsz4kMA1yu4Pm8qrwoieuRtarWNX5a2ac5pAwxz3Kphgn1391RgKPe5oZ1uuWmbnwMiVkkaZ |
+|           1 |           2 | 86V9FP5VWUc3dSrAKuJHp1AotL6CU41z3fjBUDetGzpGK8jDW7bPeVL6BJNjK8SVrf1795oPMmw78HbK1JoH1cqtKoQuPyj |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 ```
 
@@ -58,16 +73,17 @@ $ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7b
 Just use the --cols parameter.
 
 ```
-$ subaddress-derive-xmr --majorindex=1 --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' --numderive=3 --cols=subaddress,minor_index -g
+./subaddress-derive-xmr --cols=subaddress,minor_index --majorindex=1 --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
 
 +-------------------------------------------------------------------------------------------------+-------------+
 | subaddress                                                                                      | minor_index |
 +-------------------------------------------------------------------------------------------------+-------------+
-| 881oaqSBkr81GtAGvoyJ6k7phLRmjChcrLWXVGPfYf6ebGazbUf6BoCXNAENBU2uKSg7F8579SMTFNe48V8G4KdxLaU9zXh |           0 |
-| 8854ic9fQM4K2FxZs8amkZcmktM6MnRGhTM3Mfoho8DPT63xNKt8gZsbXKoquC7zfGMAAJTzkhbRR52fGAPTkjyd91Ua4z2 |           1 |
-| 83PWdoFpvz8iFfXX7HnG9Q3xuqddMnhAg3amhH1TmfZcYcS6Q62dXU5aXkiHEhp79mVcN83bs7o7D3E8Yo9aNE7fD6h6Ttf |           2 |
-+-------------------------------------------------------------------------------------------------+-------------+```
+| 87G36SRd8Ru9YG9xXjq3i7hAiHTEpVfRdjZEqn5KcWk28oFbEaNWDCiJTcL9BqrZQ8cFtonzJY3zz3LsTT95wdunQhRqW5g |           0 |
+| 88jg9HNvkisAYFz9J3gr9H4jsz4kMA1yu4Pm8qrwoieuRtarWNX5a2ac5pAwxz3Kphgn1391RgKPe5oZ1uuWmbnwMiVkkaZ |           1 |
+| 86V9FP5VWUc3dSrAKuJHp1AotL6CU41z3fjBUDetGzpGK8jDW7bPeVL6BJNjK8SVrf1795oPMmw78HbK1JoH1cqtKoQuPyj |           2 |
++-------------------------------------------------------------------------------------------------+-------------+
 ```
+
 
 # How address derivation works
 
@@ -123,8 +139,8 @@ subaddress-derive-xmr
 
     -g                   go!  ( required )
         
-    --spend-key=<key>    public spend key
-    --view-key=<key>     private view key
+    --spend-pub=<key>    public spend key
+    --view-priv=<key>    private view key
     
     --mnemonic=<words>   seed words  (unimplemented)
                            note: either key or nmemonic is required.
@@ -175,7 +191,7 @@ apt-get install php php-gmp php-mbstring php-mcrypt
 
 Try an example
 ```
-$ ./subaddress-derive-xmr --view-key='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-key='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' -g
+$ ./subaddress-derive-xmr --view-priv='55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f' --spend-pub='9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4' -g
 ```
 
 

@@ -13,8 +13,8 @@ class Util
     public static function getCliParams()
     {
         $paramsArray = [
-            'spend-key:',
-            'view-key:',
+            'spend-pub:',
+            'view-priv:',
             'majorindex:',
             'mnemonic:',
             'mnemonic-pw:',
@@ -72,8 +72,8 @@ class Util
         $loglevel = @$params['loglevel'] ?: 'specialinfo';
         MyLogger::getInstance()->set_log_level_by_name( $loglevel );
 
-        $view_key = @$params['view-key'];
-        $spend_key = @$params['spend-key'];
+        $view_key = @$params['view-priv'];
+        $spend_key = @$params['spend-pub'];
         $mnemonic = @$params['mnemonic'];
         
         if(@$params['mnemonic']) {
@@ -84,7 +84,7 @@ class Util
         }
 
         if( !($view_key && $spend_key) && !$mnemonic && !$params['gen-key']) {
-            throw new Exception( "(--view-key and --spend_key) or --mnemonic or --gen-key must be specified." );
+            throw new Exception( "(--view-priv and --spend-pub) or --mnemonic or --gen-key must be specified." );
         }
         $params['mnemonic-pw'] = @$params['mnemonic-pw'] ?: null;
         $params['majorindex'] = @$params['majorindex'] ?: 0;
@@ -144,8 +144,8 @@ class Util
 
     -g                   go!  ( required )
         
-    --spend-key=<key>    public spend key
-    --view-key=<key>     private view key
+    --spend-pub=<key>    public spend key
+    --view-priv=<key>    private view key
     
     --mnemonic=<words>   seed words  (unimplemented)
                            note: either key or nmemonic is required.

@@ -11,7 +11,7 @@ class errors extends tests_common {
     }
     
     protected function test_required_args() {
-        $expect_str = '(--view-key and --spend_key) or --mnemonic or --gen-key must be specified.';
+        $expect_str = '(--view-priv and --spend-pub) or --mnemonic or --gen-key must be specified.';
         $expect_rc = 1;        
         
         // check xprv derivation results in correct addresses.

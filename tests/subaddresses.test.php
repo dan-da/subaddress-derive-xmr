@@ -13,8 +13,8 @@ class subaddresses extends tests_common {
     protected function test_derive() {
 
         $params = [
-            'view-key'  => '55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f',
-            'spend-key' => '9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4',
+            'view-priv'  => '55cdeaa9a36c83a130e42934fcc7bb7761945fa266f026bf85a4056beafb390f',
+            'spend-pub' => '9b593fbcdc7a13f95b8cf51274bd3ffc9ef8374ee1fa14400857e927b3f2f6f4',
         ];
         $addrs = [
             '8BFkheDYAXMU7aqrxgBwkNGAxS9bpRYimWcBoVxfhjtkJTugpaV8yYpePzrvEcTdb1KyDnAFk3yf4cs2db4EBfeeSC4sBak',
