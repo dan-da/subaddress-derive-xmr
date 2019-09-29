@@ -25,8 +25,8 @@ class majorindex extends tests_common {
         // check xprv derivation results in correct addresses.
         $results = $this->derive_params( $params );
         $this->eq( @$results[0]['major_index'], 1, 'major index' );
-        $this->eq( @$results[0]['subaddress'], $addrs[0], 'subaddress 0' );
+        $this->eq( @$results[0]['address'], $addrs[0], 'address 0' );
         $this->eq( @$results[1]['major_index'], 1, 'major index' );
-        $this->eq( @$results[1]['subaddress'], $addrs[1], 'subaddress 1' );
+        $this->eq( @$results[1]['address'], $addrs[1], 'address 1' );
     }
 }

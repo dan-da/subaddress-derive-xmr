@@ -138,7 +138,7 @@ class Util
 
    subaddress-derive-xmr.php
 
-   This script derives Monero subaddresses
+   This script derives Monero addresses
 
    Options:
 

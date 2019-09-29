@@ -2,10 +2,10 @@
 
 # About
 
-This tool can be used to generate a monero address and/or derive subaddresses offline
+This tool can be used to generate a monero address and/or derive addresses offline
 without installing full monero software.
 
-Derivation reports show major index (account ID), subaddress index, and subaddress.
+Derivation reports show major index (account ID), address index, and address.
 
 Input must be a private view key and a public spend key.
 
@@ -35,21 +35,29 @@ $ ./subaddress-derive-xmr --gen-key  -g
 ```
 
 
-## Derive subaddresses
+## Derive addresses
 
-For deriving subaddresses we use the private view key and the public spend key.
+For deriving addresses we use the private view key and the public spend key.  In the examples below, we use the
+keys that were generated above.
+
+If you want to use keys from your wallet, then in the official Monero GUI, they are available in the
+Settings->Seed & Keys area. In the CLI, open your wallet and use the commands spendkey and viewkey
+to find the keys.
 
 ```
 ./subaddress-derive-xmr --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
 
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
-| major_index | minor_index | subaddress                                                                                      |
+| major_index | minor_index | address                                                                                         |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
-|           0 |           0 | 85aUAFTYV3QSatbrvdb2AJDiJ5dSNNeKS53LHewD2crtbArdd9CwPQjaBviDPZKrkj8ZKLfr1ugX8hKyRp425fjVJAsoE8G |
+|           0 |           0 | 49zf2PF7nLSHpRwWcPG8ePHxYnR6eFmYuKG8Akpq5vFALTzZzMdv3kC36fCSP3UfFdMrY51QAs5NGiGuwXK6YMa3Nk7549x |
 |           0 |           1 | 87i7kA61fNvMboXiYWHVygPAggKJPETFqLXXcdH4mQTrECvrTxZMtt6e6owj1k8jUVjNR11eBuBMWHFBtxAwEVcm9dcSUxr |
 |           0 |           2 | 8A9XmWsATrhfedtNhTMNKELwfCwMVAk2iVTdUJdFRb2AC4tV4VeBjsCLYR9cSQTwnvLo4MAuQFMLP6Si4xp6t6BS788db3t |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 ```
+
+Note that the first address (0,0) is the same address that was generated with --gen-key.  This is the master address
+for the Monero wallet and is generated slightly differently from the other subaddresses.
 
 ## Same keys, different account
 
@@ -59,7 +67,7 @@ For this, we use the --majorindex flag.
 ./subaddress-derive-xmr --majorindex=1 --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
 
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
-| major_index | minor_index | subaddress                                                                                      |
+| major_index | minor_index | address                                                                                         |
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 |           1 |           0 | 87G36SRd8Ru9YG9xXjq3i7hAiHTEpVfRdjZEqn5KcWk28oFbEaNWDCiJTcL9BqrZQ8cFtonzJY3zz3LsTT95wdunQhRqW5g |
 |           1 |           1 | 88jg9HNvkisAYFz9J3gr9H4jsz4kMA1yu4Pm8qrwoieuRtarWNX5a2ac5pAwxz3Kphgn1391RgKPe5oZ1uuWmbnwMiVkkaZ |
@@ -73,10 +81,10 @@ For this, we use the --majorindex flag.
 Just use the --cols parameter.
 
 ```
-./subaddress-derive-xmr --cols=subaddress,minor_index --majorindex=1 --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
+./subaddress-derive-xmr --cols=address,minor_index --majorindex=1 --view-priv=25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a --spend-pub=dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974 --numderive=3 -g
 
 +-------------------------------------------------------------------------------------------------+-------------+
-| subaddress                                                                                      | minor_index |
+| address                                                                                         | minor_index |
 +-------------------------------------------------------------------------------------------------+-------------+
 | 87G36SRd8Ru9YG9xXjq3i7hAiHTEpVfRdjZEqn5KcWk28oFbEaNWDCiJTcL9BqrZQ8cFtonzJY3zz3LsTT95wdunQhRqW5g |           0 |
 | 88jg9HNvkisAYFz9J3gr9H4jsz4kMA1yu4Pm8qrwoieuRtarWNX5a2ac5pAwxz3Kphgn1391RgKPe5oZ1uuWmbnwMiVkkaZ |           1 |
@@ -133,7 +141,7 @@ subaddress-derive-xmr
 
    subaddress-derive-xmr.php
 
-   This script derives Monero subaddresses
+   This script derives Monero addresses
 
    Options:
 

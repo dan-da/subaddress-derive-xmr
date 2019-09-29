@@ -10,6 +10,7 @@ use App\Utils\MyLogger;
 
 // For HD-Wallet Key Derivation
 use MoneroIntegrations\MoneroPhp;
+use MoneroIntegrations\MoneroPhp\subaddress;
 
 
 /* A class that implements HD wallet key/address derivation
@@ -71,16 +72,22 @@ class WalletDerive
     private function derive_key_worker(&$addrs, $major_index, $minor_index, $view_secret_key, $spend_public_key) {
 
         $params = $this->get_params();
+        $cn = new MoneroPHP\Cryptonote();
         
-        $sub = new MoneroPHP\subaddress();
-        $address = $sub->generate_subaddress( $major_index, $minor_index, $view_secret_key, $spend_public_key);
+        // Special case, 0/0 is the master address, not a subaddress.
+        if($major_index == 0 && $minor_index == 0) {
+            $address = $cn->encode_address($spend_public_key, $cn->pk_from_sk($view_secret_key));
+        }
+        else {
+            $address = $cn->generate_subaddress( $major_index, $minor_index, $view_secret_key, $spend_public_key);
+        }
 
         $addrs[] = [
             'view_secret_key' => $view_secret_key,
             'spend_public_key' => $spend_public_key,
             'major_index' => $major_index,
             'minor_index' => $minor_index,
-            'subaddress' => $address,
+            'address' => $address,
         ];
     }
 
@@ -131,7 +138,7 @@ class WalletDerive
                  'spend_public_key',
                  'major_index',
                  'minor_index',
-                 'subaddress',
+                 'address',
         ];
     }
 
@@ -147,7 +154,7 @@ class WalletDerive
      */
     static public function default_cols()
     {
-        return ['major_index', 'minor_index', 'subaddress'];
+        return ['major_index', 'minor_index', 'address'];
     }
     
     /* Returns default reporting columns when using --gen-key
