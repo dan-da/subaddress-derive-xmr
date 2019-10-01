@@ -7,6 +7,7 @@ require_once __DIR__  . '/../vendor/autoload.php';
 
 use Exception;
 use App\Utils\MyLogger;
+use App\mnemonic;
 
 // For HD-Wallet Key Derivation
 use MoneroIntegrations\MoneroPhp;
@@ -99,13 +100,13 @@ class WalletDerive
         
         $data = [
             'seed' => $seed,
-            'mnemonic' => 'unimplemented',   // $mnemonic,
+            'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed)),   // $mnemonic,
         ];
         
         return $data;
     }
         
-    protected function genKeysFromSeed($seedinfo) {
+    public function genKeysFromSeed($seedinfo) {
         
         $cn = new MoneroPHP\Cryptonote();
         $priv = $cn->gen_private_keys($seedinfo['seed']);

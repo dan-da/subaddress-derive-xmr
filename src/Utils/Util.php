@@ -76,8 +76,8 @@ class Util
         $spend_key = @$params['spend-pub'];
         $mnemonic = @$params['mnemonic'];
         
-        if(@$params['mnemonic']) {
-            throw new Exception("Sorry, --mnemonic has not been implemented yet.");
+        if(@$params['mnemonic-pw']) {
+            throw new Exception("Sorry, --mnemonic-pw has not been implemented yet.");
         }
         if(@$params['gen-words']) {
             throw new Exception("Sorry, --gen-words has not been implemented yet.");
@@ -147,10 +147,10 @@ class Util
     --spend-pub=<key>    public spend key
     --view-priv=<key>    private view key
     
-    --mnemonic=<words>   seed words  (unimplemented)
+    --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
                            
-    --mnemonic-pw=<pw>   optional password for mnemonic.
+    --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
 
     --majorindex         identifies an account.  default=0
     

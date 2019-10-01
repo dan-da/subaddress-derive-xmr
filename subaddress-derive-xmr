@@ -14,6 +14,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use App\Utils\MyLogger;
 use App\WalletDerive;
+use App\mnemonic;
 use App\Utils\WalletDeriveReport;
 use App\Utils\Util;
 
@@ -45,17 +46,17 @@ function main()
             return 0;
         }
 
-        // Key derived from mnemonic if mnemonic is choosen
-        if( !@$params['key'] && @$params['mnemonic'] && !@$orig_params['path'] && !@$orig_params['preset']) {
-            $path = $walletDerive->getCoinBip44ExtKeyPathPurposeByKeyType($params['coin'], $params['key-type']);
-            if($path) {
-                $params['path'] = $path;
-                $walletDerive = new WalletDerive($params);
-            }
-            else {
-                throw new Exception(sprintf("Bip32 extended key path unknown because no Bip44 ID found for %s.  You can override by setting --path explicitly.", $params['coin']));
-            }
+        if($params['mnemonic']) {
+            $mnemonic = explode(' ', trim($params['mnemonic']));
+            $seed = mnemonic::decode($mnemonic);
+            $seedinfo = ['seed' => $seed, 'mnemonic' => implode(' ', $mnemonic)];
+            $keys = $walletDerive->genKeysFromSeed($seedinfo);
+            
+            $params['view-priv'] = $keys['view-key-private'];
+            $params['spend-pub'] = $keys['spend-key-public'];
+            $walletDerive = new WalletDerive($params);
         }
+        
         // $key = @$params['key'] ?: $walletDerive->mnemonicToKey($params['coin'], $params['mnemonic'], $params['key-type'], $params['mnemonic-pw']);
         $addrs = $walletDerive->derive_keys();
 
