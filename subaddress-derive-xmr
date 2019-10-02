@@ -48,6 +48,9 @@ function main()
 
         if($params['mnemonic']) {
             $mnemonic = explode(' ', $params['mnemonic']);  // spaces already normalized.
+            if( !mnemonic::validate_checksum($mnemonic) ) {
+                throw new Exception("Invalid checksum.  One or more words is incorrect or missing.");
+            }            
             $seed = mnemonic::decode($mnemonic);
             $seedinfo = ['seed' => $seed, 'mnemonic' => $params['mnemonic']];
             $keys = $walletDerive->genKeysFromSeed($seedinfo);

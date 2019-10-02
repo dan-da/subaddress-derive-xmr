@@ -96,7 +96,7 @@ class Util
         }
         
         // error on mutually exclusive args.
-        if( ($view_key && $spend_key) + (bool)$mnemonic + (bool)$params['gen-key'] + (bool)$params['seed'] ) {
+        if( ($view_key && $spend_key) + (bool)$mnemonic + (bool)$params['gen-key'] + (bool)$params['seed'] > 1 ) {
             throw new Exception( "These flags are mutually exclusive: --mnemonic, --gen-key, --seed, and (--view-priv, --spend-pub)" );
         }
         
