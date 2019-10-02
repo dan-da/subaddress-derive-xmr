@@ -285,7 +285,14 @@ This library does all the heavy lifting.
 
 # Todos
 
-* implement --gen-key
-* implement --mnemonic
 * implement --gen-words
 * add more test cases
+* support testnet
+* support mnemonics in other languages
+* <strike>implement --gen-key</strike>
+* <strike>implement --mnemonic</strike>
+* <strike>implement --seed</strike>
+* <strike>implement --wallet-keys</strike>
+
+
+
