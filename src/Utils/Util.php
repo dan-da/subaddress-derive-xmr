@@ -87,7 +87,7 @@ class Util
             throw new Exception("Sorry, --gen-words has not been implemented yet.");
         }
 
-        if( $view_key || $spend_key && !($view_key && $spend_key)) {
+        if( ($view_key || $spend_key) && !($view_key && $spend_key)) {
             throw new Exception("--view-priv and --spend-pub must be used together");
         }
         
