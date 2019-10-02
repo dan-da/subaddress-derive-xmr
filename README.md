@@ -1,13 +1,16 @@
-**subaddress-derive-xmr is a command-line tool that generates and derives monero addresses**
+**subaddress-derive-xmr is a command-line tool that generates a monero wallet and derives addresses**
 
 # About
 
-This tool can be used to generate a monero address and/or derive addresses offline
-without installing full monero software.
+This tool can be used to generate a monero wallet and/or derive addresses offline
+from keys or from a mnemonic without installing full monero software.
 
 Derivation reports show major index (account ID), address index, and address.
 
-Input must be a private view key and a public spend key.
+Input must be provided with these flags:
+ --mnemonic : a mnemonic phrase to use an existing wallet
+ --view-priv and --spend-pub : a private view key and a public spend key
+ --gen-key : generates a new wallet seed and keys.
 
 Reports are available in json, plaintext, and html. Columns can be changed or
 re-ordered via command-line.
@@ -19,13 +22,13 @@ deriving Bitcoin HD-Wallet addresses.
 
 # Let see some examples
 
-## Generate new keys and master address
+## Generate new wallet keys and master address
 
 ```
 $ ./subaddress-derive-xmr --gen-key  -g
 {
     "seed": "66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273",
-    "mnemonic": "unimplemented",
+    "mnemonic": "focus aquarium luxury etched video smidgen sidekick because rounded cigar befit ritual layout visited wetsuit tobacco oars setup mystery insult females dauntless yodel jeopardy rounded",
     "view-key-private": "25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a",
     "view-key-public": "603ebe3bc1b2590c8a5e4caa90ee807cada4f881ad4f21f6c3653459781034c0",
     "spend-key-private": "eb1003ead738b471f5668a2e00e4f20e795ce70586298e2cc09455de1ae95203",
@@ -92,6 +95,72 @@ Just use the --cols parameter.
 +-------------------------------------------------------------------------------------------------+-------------+
 ```
 
+## Derive addresses from a mnemonic
+
+The --mnemonic flag makes it happen.
+
+```
+$ ./subaddress-derive-xmr --mnemonic="school bunch godfather school umbrella criminal mowing payment himself tacit tawny dagger phrases blender depth sayings antics bagpipe gels ability ablaze mugged balding apology sayings" -g --numderive=3
+
++-------------+-------------+-------------------------------------------------------------------------------------------------+
+| major_index | minor_index | address                                                                                         |
++-------------+-------------+-------------------------------------------------------------------------------------------------+
+|           0 |           0 | 46pbLJeN7ns2LxWGqvfYL5dEJ42UXKogi6E9kkY6hTZVM8u7FVN2egrH2mxUGTxRmd1RKhfzXU6dRDWyuub6m7QZDztrVEc |
+|           0 |           1 | 8BtVfzdXSZ6TbxjGPLsWwjcmWvYduXu23UAAeHPhPu91QF9h54Vg6dn6sGMA4e35WV5cw2YByEsdfHfhMstHHBwi7PNhETF |
+|           0 |           2 | 86XGETJkKkoN2dcD9sv2Sx1XHby1XC9dFaYvM6hnRr1NHjnH6sd6ZQydSJUy9xqrPQiqWtFZ6FLuQiRdwGpc7LMb7BLNmTv |
++-------------+-------------+-------------------------------------------------------------------------------------------------+
+```
+
+## Get seed and wallet keys from a mnemonic
+
+Just use --wallet-keys in addition to --mnemonic.  Note that --wallet-keys defaults to jsonpretty output, but that can
+be changed with the -format flag.
+
+```
+$ ./subaddress-derive-xmr --wallet-keys --mnemonic="school bunch godfather school umbrella criminal mowing payment himself tacit tawny dagger phrases blender depth sayings antics bagpipe gels ability ablaze mugged balding apology sayings" -g
+{
+    "seed": "e5f8bd36b5d9174725aca5bc88a8ac567a0d1614a840d109af84430001fd56f7",
+    "mnemonic": "school bunch godfather school umbrella criminal mowing payment himself tacit tawny dagger phrases blender depth sayings antics bagpipe gels ability ablaze mugged balding apology sayings",
+    "view-key-private": "6b4236e3446c290ed5df7cee7389925796759e6ad464318fed2f6c159cadc405",
+    "view-key-public": "62e7eb0777e9b35fd739e7ec43cc540281d42ccd1ef82c4ad57182eb06f49e73",
+    "spend-key-private": "028e56c4290b041e967b23307d049c1d790d1614a840d109af84430001fd5607",
+    "spend-key-public": "892aacab12ca34080927d5fda5772ed899abb1f6e904c71f3fa6c4ee51d13478",
+    "address": "46pbLJeN7ns2LxWGqvfYL5dEJ42UXKogi6E9kkY6hTZVM8u7FVN2egrH2mxUGTxRmd1RKhfzXU6dRDWyuub6m7QZDztrVEc"
+}
+```
+
+## Derive addresses from a seed
+
+We use the --seed flag
+
+```
+$ ./subaddress-derive-xmr --seed="66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273" -g --numderive=3
+
++-------------+-------------+-------------------------------------------------------------------------------------------------+
+| major_index | minor_index | address                                                                                         |
++-------------+-------------+-------------------------------------------------------------------------------------------------+
+|           0 |           0 | 49zf2PF7nLSHpRwWcPG8ePHxYnR6eFmYuKG8Akpq5vFALTzZzMdv3kC36fCSP3UfFdMrY51QAs5NGiGuwXK6YMa3Nk7549x |
+|           0 |           1 | 87i7kA61fNvMboXiYWHVygPAggKJPETFqLXXcdH4mQTrECvrTxZMtt6e6owj1k8jUVjNR11eBuBMWHFBtxAwEVcm9dcSUxr |
+|           0 |           2 | 8A9XmWsATrhfedtNhTMNKELwfCwMVAk2iVTdUJdFRb2AC4tV4VeBjsCLYR9cSQTwnvLo4MAuQFMLP6Si4xp6t6BS788db3t |
++-------------+-------------+-------------------------------------------------------------------------------------------------+
+```
+
+## Get mnemonic and wallet keys from a seed
+
+Again we add the --wallet-keys flag.
+
+$ ./subaddress-derive-xmr --wallet-keys --seed="66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273" -g --numderive=3
+{
+    "seed": "66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273",
+    "mnemonic": "focus aquarium luxury etched video smidgen sidekick because rounded cigar befit ritual layout visited wetsuit tobacco oars setup mystery insult females dauntless yodel jeopardy rounded",
+    "view-key-private": "25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a",
+    "view-key-public": "603ebe3bc1b2590c8a5e4caa90ee807cada4f881ad4f21f6c3653459781034c0",
+    "spend-key-private": "eb1003ead738b471f5668a2e00e4f20e795ce70586298e2cc09455de1ae95203",
+    "spend-key-public": "dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974",
+    "address": "49zf2PF7nLSHpRwWcPG8ePHxYnR6eFmYuKG8Akpq5vFALTzZzMdv3kC36fCSP3UfFdMrY51QAs5NGiGuwXK6YMa3Nk7549x"
+}
+
+
 
 # How address derivation works
 
@@ -146,14 +215,16 @@ subaddress-derive-xmr
    Options:
 
     -g                   go!  ( required )
-        
+    
     --spend-pub=<key>    public spend key
     --view-priv=<key>    private view key
     
-    --mnemonic=<words>   seed words  (unimplemented)
+    --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
                            
     --mnemonic-pw=<pw>   optional password for mnemonic.
+    
+    --mnemonic-keys      display seed+keys for --mnemonic.
 
     --majorindex         identifies an account.  default=0
     

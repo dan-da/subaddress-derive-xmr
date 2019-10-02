@@ -18,6 +18,8 @@ class Util
             'majorindex:',
             'mnemonic:',
             'mnemonic-pw:',
+            'seed:',
+            'wallet-keys',
             'outfile:',
             'numderive:',
             'startindex:',
@@ -54,9 +56,12 @@ class Util
         }
 
         $params['gen-key'] = isset($params['gen-key']) || isset($params['gen-words']);
+        $params['mnemonic'] = $mnemonic  = self::normalize_whitespace(@$params['mnemonic']);
+        $params['wallet-keys'] = isset($params['wallet-keys']);
+        $params['seed'] = $seed = @$params['seed'];
         $params['cols'] = @$params['cols'] ?: null;
         $params['cols'] = static::getCols( $params );
-        $params['format'] = @$params['format'] ?: ($params['gen-key'] ? 'jsonpretty' : 'txt');
+        $params['format'] = @$params['format'] ?: (self::report_type($params) == 'keys' ? 'jsonpretty' : 'txt');
         
         if(isset($params['help']) || !isset($params['g'])) {
             static::printHelp();
@@ -74,7 +79,6 @@ class Util
 
         $view_key = @$params['view-priv'];
         $spend_key = @$params['spend-pub'];
-        $mnemonic = @$params['mnemonic'];
         
         if(@$params['mnemonic-pw']) {
             throw new Exception("Sorry, --mnemonic-pw has not been implemented yet.");
@@ -83,16 +87,26 @@ class Util
             throw new Exception("Sorry, --gen-words has not been implemented yet.");
         }
 
-        if( !($view_key && $spend_key) && !$mnemonic && !$params['gen-key']) {
-            throw new Exception( "(--view-priv and --spend-pub) or --mnemonic or --gen-key must be specified." );
+        if( $view_key || $spend_key && !($view_key && $spend_key)) {
+            throw new Exception("--view-priv and --spend-pub must be used together");
         }
+        
+        if( !($view_key && $spend_key) && !$mnemonic && !$params['gen-key'] && !$params['seed']) {
+            throw new Exception( "(--view-priv and --spend-pub) or --mnemonic or --gen-key or --seed must be specified." );
+        }
+        
+        // error on mutually exclusive args.
+        if( ($view_key && $spend_key) + (bool)$mnemonic + (bool)$params['gen-key'] + (bool)$params['seed'] ) {
+            throw new Exception( "These flags are mutually exclusive: --mnemonic, --gen-key, --seed, and (--view-priv, --spend-pub)" );
+        }
+        
         $params['mnemonic-pw'] = @$params['mnemonic-pw'] ?: null;
         $params['majorindex'] = @$params['majorindex'] ?: 0;
         $params['numderive'] = isset($params['numderive']) ? $params['numderive'] : 10;
         $params['startindex'] = @$params['startindex'] ?: 0;
         $params['includeroot'] = isset($params['includeroot'] );
         
-        $gen_words = (int)(@$params['gen-words'] ?: 24);
+        $gen_words = (int)(@$params['gen-words'] ?: 25);
         $allowed = self::allowed_numwords();
         if(!in_array($gen_words, $allowed)) {
             throw new Exception("--gen-words must be one of " . implode(', ', $allowed));
@@ -103,11 +117,7 @@ class Util
     }
     
     public static function allowed_numwords() {
-        $allowed = [];
-        for($i = 12; $i <= 48; $i += 3) {
-            $allowed[] = $i;
-        }
-        return $allowed;
+        return [13,25];
     }
 
     /**
@@ -151,6 +161,11 @@ class Util
                            note: either key or nmemonic is required.
                            
     --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
+    
+    --seed=<seed>        wallet seed in hex  
+    
+    --wallet-keys        display seed+keys and do not derive.
+                          applies to --mnemonic and --seed.
 
     --majorindex         identifies an account.  default=0
     
@@ -174,10 +189,11 @@ class Util
                          'list' prints only the first column. see --cols
 
     --includeroot       include root key as first element of report.
-    --gen-key           generates a new key. (unimplemented)
+    --gen-key           generates a new key.
     --gen-words=<n>     num words to generate. implies --gen-key.
+                           (unimplemented)
                            one of: [$allowed_numwords]
-                           default = 24.
+                           default = 25.
     
     --logfile=<file>    path to logfile. if not present logs to stdout.
     --loglevel=<level>  $loglevels
@@ -191,6 +207,13 @@ END;
 
     }
     
+    protected static function report_type($params) {
+        if( $params['gen-key'] || ( ($params['mnemonic'] || $params['seed']) && $params['wallet-keys']) ) {
+            return 'keys';
+        }
+        return 'derive';
+    }
+    
     /* parses the --cols argument and returns an array of columns.
      */
     public static function getCols( $params )
@@ -198,7 +221,9 @@ END;
         $arg = static::stripWhitespace( @$params['cols'] ?: null );
 
         $allcols = [];
-        if( $params['gen-key']) {
+        
+        $report = self::report_type($params);
+        if( $report == 'keys' ) {
             $allcols = WalletDerive::all_cols_genkey();
         }
         else {
@@ -209,7 +234,7 @@ END;
             $cols = $allcols;
         }
         else if( !$arg ) {
-            $cols = $params['gen-key'] ? WalletDerive::default_cols_genkey() : WalletDerive::default_cols();
+            $cols = $report == 'keys' ? WalletDerive::default_cols_genkey() : WalletDerive::default_cols();
         }
         else {
             $cols = explode( ',', $arg );
@@ -230,4 +255,12 @@ END;
     {
         return preg_replace('/\s+/', '', $str);
     }
+    
+    /* compress each whitespace to a single space, and trim ends.
+     */
+    public static function normalize_whitespace( $str )
+    {
+        return trim(preg_replace('/\s+/', ' ', $str));
+    }
+    
 }

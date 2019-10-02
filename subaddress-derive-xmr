@@ -47,14 +47,33 @@ function main()
         }
 
         if($params['mnemonic']) {
-            $mnemonic = explode(' ', trim($params['mnemonic']));
+            $mnemonic = explode(' ', $params['mnemonic']);  // spaces already normalized.
             $seed = mnemonic::decode($mnemonic);
-            $seedinfo = ['seed' => $seed, 'mnemonic' => implode(' ', $mnemonic)];
+            $seedinfo = ['seed' => $seed, 'mnemonic' => $params['mnemonic']];
             $keys = $walletDerive->genKeysFromSeed($seedinfo);
+            
+            if($params['wallet-keys']) {
+                WalletDeriveReport::printResults($params, [$keys]);
+                return 0;
+            }
             
             $params['view-priv'] = $keys['view-key-private'];
             $params['spend-pub'] = $keys['spend-key-public'];
             $walletDerive = new WalletDerive($params);
+        }
+        else if($params['seed']) {
+            $seed = trim($params['seed']);
+            $seedinfo = ['seed' => $seed, 'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed))];
+            $keys = $walletDerive->genKeysFromSeed($seedinfo);
+            
+            if($params['wallet-keys']) {
+                WalletDeriveReport::printResults($params, [$keys]);
+                return 0;
+            }
+            
+            $params['view-priv'] = $keys['view-key-private'];
+            $params['spend-pub'] = $keys['spend-key-public'];
+            $walletDerive = new WalletDerive($params);            
         }
         
         // $key = @$params['key'] ?: $walletDerive->mnemonicToKey($params['coin'], $params['mnemonic'], $params['key-type'], $params['mnemonic-pw']);
