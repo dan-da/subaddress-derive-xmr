@@ -149,6 +149,7 @@ $ ./subaddress-derive-xmr --seed="66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e
 
 Again we add the --wallet-keys flag.
 
+```
 $ ./subaddress-derive-xmr --wallet-keys --seed="66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273" -g --numderive=3
 {
     "seed": "66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273",
@@ -159,7 +160,7 @@ $ ./subaddress-derive-xmr --wallet-keys --seed="66dcbb7490ee34dad1b04fa316b90ba1
     "spend-key-public": "dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974",
     "address": "49zf2PF7nLSHpRwWcPG8ePHxYnR6eFmYuKG8Akpq5vFALTzZzMdv3kC36fCSP3UfFdMrY51QAs5NGiGuwXK6YMa3Nk7549x"
 }
-
+```
 
 
 # How address derivation works
@@ -206,8 +207,6 @@ The report may be printed in the following formats:
 # Usage
 
 ```
-subaddress-derive-xmr 
-
    subaddress-derive-xmr.php
 
    This script derives Monero addresses
@@ -215,16 +214,19 @@ subaddress-derive-xmr
    Options:
 
     -g                   go!  ( required )
-    
+        
     --spend-pub=<key>    public spend key
     --view-priv=<key>    private view key
     
     --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
                            
-    --mnemonic-pw=<pw>   optional password for mnemonic.
+    --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
     
-    --mnemonic-keys      display seed+keys for --mnemonic.
+    --seed=<seed>        wallet seed in hex  
+    
+    --wallet-keys        display seed+keys and do not derive.
+                          applies to --mnemonic and --seed.
 
     --majorindex         identifies an account.  default=0
     
@@ -234,9 +236,9 @@ subaddress-derive-xmr
                             
     --cols=<cols>        a csv list of columns, or "all"
                          all:
-                          (view_secret_key,spend_public_key,major_index,minor_index,subaddress)
+                          (view_secret_key,spend_public_key,major_index,minor_index,address)
                          default:
-                          (major_index,minor_index,subaddress)
+                          (major_index,minor_index,address)
 
     --outfile=<path>     specify output file path.
     --format=<format>    txt|md|csv|json|jsonpretty|html|list|all   default=txt
@@ -248,10 +250,11 @@ subaddress-derive-xmr
                          'list' prints only the first column. see --cols
 
     --includeroot       include root key as first element of report.
-    --gen-key           generates a new key. (unimplemented)
+    --gen-key           generates a new key.
     --gen-words=<n>     num words to generate. implies --gen-key.
-                           one of: [12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48]
-                           default = 24.
+                           (unimplemented)
+                           one of: [13, 25]
+                           default = 25.
     
     --logfile=<file>    path to logfile. if not present logs to stdout.
     --loglevel=<level>  debug,info,specialinfo,warning,exception,fatalerror
