@@ -55,14 +55,18 @@ function main()
 
         if($params['mnemonic']) {
             $mnemonic = explode(' ', $params['mnemonic']);  // spaces already normalized.
-            $ws = mnemonic::get_wordset_by_name($params['mnemonic-ws']);
+            $mnemonic_ws = mnemonic::find_wordset_by_mnemonic($mnemonic);
+            if(!$mnemonic_ws) {
+                throw new \Exception("Unrecognized word in mnemonic phrase");
+            }            
+            $ws = mnemonic::get_wordset_by_name($mnemonic_ws);
             if( !mnemonic::validate_checksum($mnemonic, $ws['prefix_len'] )) {
                 throw new Exception("Invalid checksum.  One or more words is incorrect or missing.");
-            }            
-            $seed = mnemonic::decode($mnemonic, $params['mnemonic-ws']);
+            }
+            $seed = mnemonic::decode($mnemonic, $mnemonic_ws);
             $seedinfo = ['seed' => $seed,
                          'mnemonic' => $params['mnemonic'],
-                         'mnemonic-wordset' => $params['mnemonic-ws']
+                         'wordset' => $params['wordset']
             ];
             $keys = $walletDerive->genKeysFromSeed($seedinfo);
             
@@ -78,8 +82,8 @@ function main()
         else if($params['seed']) {
             $seed = trim($params['seed']);
             $seedinfo = ['seed' => $seed,
-                         'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed, $params['mnemonic-ws'])),
-                         'mnemonic-wordset' => $params['mnemonic-ws']
+                         'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed, $params['wordset'])),
+                         'wordset' => $params['wordset']
             ];
             $keys = $walletDerive->genKeysFromSeed($seedinfo);
             

@@ -27,7 +27,6 @@ class Util
             'majorindex:',
             'mnemonic:',
             'mnemonic-pw:',
-            'mnemonic-ws:',
             'seed:',
             'wallet-keys',
             'outfile:',
@@ -40,6 +39,7 @@ class Util
             'loglevel:',
             'list-cols',
             'gen-wallet',
+            'wordset:',
             'gen-words:',
             'version',
             'help',
@@ -110,7 +110,7 @@ class Util
             throw new Exception( "These flags are mutually exclusive: --mnemonic, --gen-wallet, --seed, and (--view-priv, --spend-pub)" );
         }
         
-        $params['mnemonic-ws'] = @$params['mnemonic-ws'] ?: 'english';
+        $params['wordset'] = @$params['wordset'] ?: 'english';  // applies to generating mnemonic, not reading an existing one.
         $params['mnemonic-pw'] = @$params['mnemonic-pw'] ?: null;
         $params['majorindex'] = @$params['majorindex'] ?: 0;
         $params['numderive'] = isset($params['numderive']) ? $params['numderive'] : 10;
@@ -169,10 +169,7 @@ class Util
     
     --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
-                           
-    --mnemonic-ws=<ws>   mnemonic wordset. default=english.
-                          [english, electrum, japanese, spanish, portuguese]
-                          
+                                                     
     --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
     
     --seed=<seed>        wallet seed in hex  
@@ -202,6 +199,10 @@ class Util
                          'list' prints only the first column. see --cols
 
     --gen-wallet        generates keys and mnemonic for a new wallet.
+    
+    --wordset=<ws>      wordset for generating wallet mnemonic. default=english.
+                          [english, electrum, japanese, spanish, portuguese]
+    
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
                            one of: [$allowed_numwords]

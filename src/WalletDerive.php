@@ -109,8 +109,8 @@ class WalletDerive
         
         $data = [
             'seed' => $seed,
-            'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed, $params['mnemonic-ws'])),   // $mnemonic,
-            'mnemonic-wordset' => $params['mnemonic-ws'],
+            'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed, $params['wordset'])),
+            'wordset' => $params['wordset'],
         ];
         
         return $data;
@@ -126,7 +126,7 @@ class WalletDerive
         
         $data = ['seed' => $seedinfo['seed'],
                  'mnemonic' => $seedinfo['mnemonic'],
-                 'mnemonic-wordset' => $seedinfo['mnemonic-wordset'],
+                 'wordset' => $seedinfo['wordset'],
                  'view-key-private' => $priv['viewKey'],
                  'view-key-public' => $view_key_public,
                  'spend-key-private' => $priv['spendKey'],
@@ -158,7 +158,7 @@ class WalletDerive
      */
     static public function all_cols_genwallet()
     {
-        return ['seed', 'mnemonic', 'mnemonic-wordset', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
+        return ['seed', 'mnemonic', 'wordset', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
     }
     
     
@@ -173,7 +173,7 @@ class WalletDerive
      */
     static public function default_cols_genwallet()
     {
-        return ['seed', 'mnemonic', 'mnemonic-wordset', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
+        return ['seed', 'mnemonic', 'wordset', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
     }
     
 }

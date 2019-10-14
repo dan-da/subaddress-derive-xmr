@@ -172,6 +172,43 @@ class mnemonic {
         return $ws;
     }
     
+    /**
+     * Given a mnemonic array of words, returns name of matching
+     * wordset that contains all words, or null if not found.
+     *
+     * throws an exception if more than one wordset matches all words,
+     * but in theory that should never happen.
+     */
+    static public function find_wordset_by_mnemonic($mnemonic) {
+        $sets = get_wordsets();
+        $matched_wordsets = [];
+        foreach($sets as $ws_name => $ws) {
+            
+            // note, to make the search faster, we truncate each word
+            // according to prefix_len of the wordset, and lookup
+            // by key in trunc_words, rather than searching through
+            // entire wordset array.
+            $allmatch = true;
+            foreach($mnemonic as $word) {
+                $tw = $ws['prefix_len'] == 0 ? $word : mb_substr($word, 0, $ws['prefix_len']);
+                if( @$ws['trunc_words'][$tw] === null) {
+                    $allmatch = false;
+                    break;
+                }
+            }
+            if( $allmatch) {
+                $matched_wordsets[] = $ws_name;
+            }
+        }
+        
+        $cnt = count($matched_wordsets);
+        if($cnt > 1) {
+            throw new \Exception("Ambiguous match. mnemonic matches $cnt wordsets.");
+        }
+        
+        return @$matched_wordsets[0];
+    }
+    
     
     /**
      * returns list of available wordsets
