@@ -202,6 +202,7 @@ class Util
     
     --wordset=<ws>      wordset for generating wallet mnemonic. default=english.
                           [english, electrum, japanese, spanish, portuguese]
+                          applies only to --gen-wallet and --seed
     
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
