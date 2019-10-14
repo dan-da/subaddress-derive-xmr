@@ -342,6 +342,7 @@ This library does much of the heavy lifting.
 # Todos
 
 * implement --mnemonic-pw (mnemonic password)
+* move mnemonic class into separate repo for other php devs to use.
 * auto detect mnemonic wordset from mnemonic words.
 * implement --gen-words (variable length mnemonics).
 * implement --network  (support testnet)
