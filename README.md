@@ -307,7 +307,6 @@ The report may be printed in the following formats:
                          
                          'list' prints only the first column. see --cols
 
-    --includeroot       include root key as first element of report.
     --gen-wallet        generates keys and mnemonic for a new wallet.
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)

@@ -115,7 +115,6 @@ class Util
         $params['majorindex'] = @$params['majorindex'] ?: 0;
         $params['numderive'] = isset($params['numderive']) ? $params['numderive'] : 10;
         $params['startindex'] = @$params['startindex'] ?: 0;
-        $params['includeroot'] = isset($params['includeroot'] );
         
         $gen_words = (int)(@$params['gen-words'] ?: 25);
         $allowed = self::allowed_numwords();
@@ -202,7 +201,6 @@ class Util
                          
                          'list' prints only the first column. see --cols
 
-    --includeroot       include root key as first element of report.
     --gen-wallet        generates keys and mnemonic for a new wallet.
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
