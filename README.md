@@ -31,7 +31,7 @@ $ ./subaddress-derive-xmr --gen-wallet  -g
 {
     "seed": "66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273",
     "mnemonic": "focus aquarium luxury etched video smidgen sidekick because rounded cigar befit ritual layout visited wetsuit tobacco oars setup mystery insult females dauntless yodel jeopardy rounded",
-    "mnemonic-wordset": "english",
+    "wordset": "english",
     "view-key-private": "25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a",
     "view-key-public": "603ebe3bc1b2590c8a5e4caa90ee807cada4f881ad4f21f6c3653459781034c0",
     "spend-key-private": "eb1003ead738b471f5668a2e00e4f20e795ce70586298e2cc09455de1ae95203",
@@ -42,14 +42,14 @@ $ ./subaddress-derive-xmr --gen-wallet  -g
 
 ## Generate new wallet using alternative wordset
 
-Here we specify --mnemonic-ws=japanese to generate a mnemonic in Japanese.
+Here we specify --wordset=japanese to generate a mnemonic in Japanese.
 
 ```
-$ ./subaddress-derive-xmr --gen-wallet --mnemonic-ws=japanese -g
+$ ./subaddress-derive-xmr --gen-wallet --wordset=japanese -g
 {
     "seed": "a6d5b4007d6b05d3a46b8bae199c8eef702c05f4fa219dbc80c84913da1c6a7e",
     "mnemonic": "すくう あらわす あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう",
-    "mnemonic-wordset": "japanese",
+    "wordset": "japanese",
     "view-key-private": "48381703f1354d371678d1e8a63d2eef6cde8e6b406ff466902583024fe93c0a",
     "view-key-public": "a528500e7bf5ea90e2da21c7e1dcb8bc2d23c1fca912dbcf050f26fa760fa3ea",
     "spend-key-private": "2b0afc75c4b5846ac821c63903c7755d702c05f4fa219dbc80c84913da1c6a0e",
@@ -152,14 +152,15 @@ $ ./subaddress-derive-xmr --wallet-keys --mnemonic="school bunch godfather schoo
 
 ## Use a mnemonic with alternative wordset.
 
-Presently, it is necessary to specify the wordset with the --mnemonic-ws flag.
+Note that "wordset: japanese" is present in the results.
+The wordset is automatically detected from the words in the mnemonic phrase.
 
 ```
-$ ./subaddress-derive-xmr --wallet-keys --mnemonic-ws=japanese --mnemonic="すくう あらわ す あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう" -g
+$ ./subaddress-derive-xmr --wallet-keys --mnemonic="すくう あらわ す あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう" -g
 {
     "seed": "a6d5b4007d6b05d3a46b8bae199c8eef702c05f4fa219dbc80c84913da1c6a7e",
     "mnemonic": "すくう あらわす あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう",
-    "mnemonic-wordset": "japanese",
+    "wordset": "japanese",
     "view-key-private": "48381703f1354d371678d1e8a63d2eef6cde8e6b406ff466902583024fe93c0a",
     "view-key-public": "a528500e7bf5ea90e2da21c7e1dcb8bc2d23c1fca912dbcf050f26fa760fa3ea",
     "spend-key-private": "2b0afc75c4b5846ac821c63903c7755d702c05f4fa219dbc80c84913da1c6a0e",
@@ -215,11 +216,11 @@ As of this writing, the following mnemonic wordsets are supported:
     
 This list is available in the usage help.
 
-A particular wordset can be specified using the --mnemonic-ws flag
-which is recognized when generating a wallet, deriving subaddresses
-or displaying wallet info.
+A particular wordset can be specified using the --wordset flag
+which is recognized when generating a wallet or displaying wallet info
+from a seed.
 
-The default is english.
+The default wordset is english.
 
 
 
@@ -275,10 +276,7 @@ The report may be printed in the following formats:
     
     --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
-                           
-    --mnemonic-ws=<ws>   mnemonic wordset. default=english.
-                          [english, electrum, japanese, spanish, portuguese]
-                          
+                                                     
     --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
     
     --seed=<seed>        wallet seed in hex  
@@ -308,6 +306,11 @@ The report may be printed in the following formats:
                          'list' prints only the first column. see --cols
 
     --gen-wallet        generates keys and mnemonic for a new wallet.
+    
+    --wordset=<ws>      wordset for generating wallet mnemonic. default=english.
+                          [english, electrum, japanese, spanish, portuguese]
+                          applies only to --gen-wallet and --seed
+    
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
                            one of: [13, 25]
@@ -343,16 +346,13 @@ This library does much of the heavy lifting.
 
 * implement --mnemonic-pw (mnemonic password)
 * move mnemonic class into separate repo for other php devs to use.
-* auto detect mnemonic wordset from mnemonic words.
 * add all available mnemonic wordsets / langs.
 * implement --gen-words (variable length mnemonics).
 * implement --network  (support testnet)
 * add more test cases
+* <strike>auto detect mnemonic wordset from mnemonic words.</strike>
 * <strike>support mnemonics in other languages</strike>
 * <strike>implement --gen-wallet</strike>
 * <strike>implement --mnemonic</strike>
 * <strike>implement --seed</strike>
 * <strike>implement --wallet-keys</strike>
-
-
-
