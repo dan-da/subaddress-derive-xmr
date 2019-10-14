@@ -30,9 +30,10 @@ class mnemonic_wordsets extends tests_common {
 
             // check xprv derivation results in correct addresses.
             $params = ['mnemonic' => $values['mnemonic'],
-                       'mnemonic-ws' => $wordset,
                        'wallet-keys' => null,
             ];
+            
+            // note: the wordset (lang) is detected automatically from the mnemonic.
         
             // tests default value for --key-type
             $result = $this->derive_params( $params );
@@ -47,10 +48,10 @@ class mnemonic_wordsets extends tests_common {
 
             // check xprv derivation results in correct addresses.
             $params = ['seed' => $values['seed'],
-                       'mnemonic-ws' => $wordset,
+                       'wordset' => $wordset,  // must be specified when generating a mnemonic.
                        'wallet-keys' => null,
             ];
-        
+            
             // tests default value for --key-type
             $result = $this->derive_params( $params );
             $expect = $values['mnemonic'];
