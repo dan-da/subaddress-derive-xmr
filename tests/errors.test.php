@@ -13,7 +13,7 @@ class errors extends tests_common {
     }
     
     protected function test_required_args() {
-        $expect_str = '(--view-priv and --spend-pub) or --mnemonic or --gen-key or --seed must be specified.';
+        $expect_str = '(--view-priv and --spend-pub) or --mnemonic or --gen-wallet or --seed must be specified.';
         $expect_rc = 1;        
         
         // check xprv derivation results in correct addresses.
@@ -30,16 +30,16 @@ class errors extends tests_common {
     }    
     
     protected function test_mutually_exclusive_args() {
-        $expect_str = 'These flags are mutually exclusive: --mnemonic, --gen-key, --seed, and (--view-priv, --spend-pub)';
+        $expect_str = 'These flags are mutually exclusive: --mnemonic, --gen-wallet, --seed, and (--view-priv, --spend-pub)';
         $expect_rc = 1;        
         
-        $params = ['format' => 'list', 'gen-key' => null, 'view-priv' => 1, 'spend-pub' => 1];
+        $params = ['format' => 'list', 'gen-wallet' => null, 'view-priv' => 1, 'spend-pub' => 1];
         $this->exec_params_expect_error( $params, $expect_rc, $expect_str, 'mutually exclusive args' );
         
-        $params = ['format' => 'list', 'gen-key' => null, 'mnemonic' => 1];
+        $params = ['format' => 'list', 'gen-wallet' => null, 'mnemonic' => 1];
         $this->exec_params_expect_error( $params, $expect_rc, $expect_str, 'mutually exclusive args' );
         
-        $params = ['format' => 'list', 'gen-key' => null, 'seed' => 1];
+        $params = ['format' => 'list', 'gen-wallet' => null, 'seed' => 1];
         $this->exec_params_expect_error( $params, $expect_rc, $expect_str, 'mutually exclusive args' );
         
         $params = ['format' => 'list', 'mnemonic' => 1, 'seed' => 1];

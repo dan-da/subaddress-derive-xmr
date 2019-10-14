@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * copyright (c) Dan Libby 2019
+ * 
+ * Use of this software is subject to the terms of the
+ * GNU GENERAL PUBLIC LICENSE Version 3.
+ * See included LICENSE file or if missing
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ */
+
 namespace App\Utils;
 
 
@@ -18,6 +27,7 @@ class Util
             'majorindex:',
             'mnemonic:',
             'mnemonic-pw:',
+            'mnemonic-ws:',
             'seed:',
             'wallet-keys',
             'outfile:',
@@ -29,7 +39,7 @@ class Util
             'logfile:',
             'loglevel:',
             'list-cols',
-            'gen-key',
+            'gen-wallet',
             'gen-words:',
             'version',
             'help',
@@ -55,7 +65,7 @@ class Util
             return [$params, 2];
         }
 
-        $params['gen-key'] = isset($params['gen-key']) || isset($params['gen-words']);
+        $params['gen-wallet'] = isset($params['gen-wallet']) || isset($params['gen-words']);
         $params['mnemonic'] = $mnemonic  = self::normalize_whitespace(@$params['mnemonic']);
         $params['wallet-keys'] = isset($params['wallet-keys']);
         $params['seed'] = $seed = @$params['seed'];
@@ -91,15 +101,16 @@ class Util
             throw new Exception("--view-priv and --spend-pub must be used together");
         }
         
-        if( !($view_key && $spend_key) && !$mnemonic && !$params['gen-key'] && !$params['seed']) {
-            throw new Exception( "(--view-priv and --spend-pub) or --mnemonic or --gen-key or --seed must be specified." );
+        if( !($view_key && $spend_key) && !$mnemonic && !$params['gen-wallet'] && !$params['seed']) {
+            throw new Exception( "(--view-priv and --spend-pub) or --mnemonic or --gen-wallet or --seed must be specified." );
         }
         
         // error on mutually exclusive args.
-        if( ($view_key && $spend_key) + (bool)$mnemonic + (bool)$params['gen-key'] + (bool)$params['seed'] > 1 ) {
-            throw new Exception( "These flags are mutually exclusive: --mnemonic, --gen-key, --seed, and (--view-priv, --spend-pub)" );
+        if( ($view_key && $spend_key) + (bool)$mnemonic + (bool)$params['gen-wallet'] + (bool)$params['seed'] > 1 ) {
+            throw new Exception( "These flags are mutually exclusive: --mnemonic, --gen-wallet, --seed, and (--view-priv, --spend-pub)" );
         }
         
+        $params['mnemonic-ws'] = @$params['mnemonic-ws'] ?: 'english';
         $params['mnemonic-pw'] = @$params['mnemonic-pw'] ?: null;
         $params['majorindex'] = @$params['majorindex'] ?: 0;
         $params['numderive'] = isset($params['numderive']) ? $params['numderive'] : 10;
@@ -160,6 +171,9 @@ class Util
     --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
                            
+    --mnemonic-ws=<ws>   mnemonic wordset. default=english.
+                          [english, electrum, japanese, spanish, portuguese]
+                          
     --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
     
     --seed=<seed>        wallet seed in hex  
@@ -189,8 +203,8 @@ class Util
                          'list' prints only the first column. see --cols
 
     --includeroot       include root key as first element of report.
-    --gen-key           generates a new key.
-    --gen-words=<n>     num words to generate. implies --gen-key.
+    --gen-wallet        generates keys and mnemonic for a new wallet.
+    --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
                            one of: [$allowed_numwords]
                            default = 25.
@@ -203,12 +217,12 @@ class Util
 
 END;
 
-        fprintf( STDERR, $buf );
+        fprintf( STDOUT, $buf );
 
     }
     
     protected static function report_type($params) {
-        if( $params['gen-key'] || ( ($params['mnemonic'] || $params['seed']) && $params['wallet-keys']) ) {
+        if( $params['gen-wallet'] || ( ($params['mnemonic'] || $params['seed']) && $params['wallet-keys']) ) {
             return 'keys';
         }
         return 'derive';
@@ -224,7 +238,7 @@ END;
         
         $report = self::report_type($params);
         if( $report == 'keys' ) {
-            $allcols = WalletDerive::all_cols_genkey();
+            $allcols = WalletDerive::all_cols_genwallet();
         }
         else {
             $allcols = WalletDerive::all_cols();
@@ -234,7 +248,7 @@ END;
             $cols = $allcols;
         }
         else if( !$arg ) {
-            $cols = $report == 'keys' ? WalletDerive::default_cols_genkey() : WalletDerive::default_cols();
+            $cols = $report == 'keys' ? WalletDerive::default_cols_genwallet() : WalletDerive::default_cols();
         }
         else {
             $cols = explode( ',', $arg );

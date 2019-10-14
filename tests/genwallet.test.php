@@ -4,20 +4,20 @@ namespace tester;
 
 require_once __DIR__  . '/tests_common.php';
 
-class genkey extends tests_common {
+class genwallet extends tests_common {
     
     const mnemonic = 'nothing edit remember box goddess local cabin term social destroy inner universe candy maze horse zone step direct captain patch cream output large ticket early cactus clap curious link quarter stamp guitar bone believe subject lawsuit funny infant creek width trigger talent kick payment habit example game shrimp';
     
     public function runtests() {
         return;  // unimplemented.
-        $this->test_genkey_btc_mainnet();
+        $this->test_genwallet_btc_mainnet();
     }
     
-    protected function test_genkey_btc_mainnet() {
+    protected function test_genwallet_btc_mainnet() {
         
         // check xprv derivation results in correct addresses.
         $params = [
-            'gen-key' => null,
+            'gen-wallet' => null,
             'format' => 'jsonpretty',
         ];
         

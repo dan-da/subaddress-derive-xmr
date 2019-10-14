@@ -47,12 +47,9 @@ abstract class tests_common extends tester\test_base {
         $output = $this->exec($args, $expect_rc, $label);
         return json_decode($output, true) ?: [];
     }
-    
-    protected function exec($args, $expect_rc=0, $label) {
-        
-        $prog = realpath(__DIR__ . '/../subaddress-derive-xmr');
-        $cmd = sprintf('%s %s 2>&1', $prog, $args);
 
+    protected function exec_cmd($cmd, $expect_rc=0, $label) {
+        
         $this->last_cmd = $cmd;
         exec($cmd, $output, $rc);
         
@@ -60,10 +57,16 @@ abstract class tests_common extends tester\test_base {
             $this->eq($rc, $expect_rc, $label . ' : unexpected command exit code.');
         }
         
-        // if($rc == 0 && $rc != $expect_rc) {
-        //    throw new \Exception("command failed with exit code " . $rc . "\n  command was:\n\n\n\n$cmd", $rc);
-        // }
         return trim(implode("\n", $output));
+    }
+
+    
+    protected function exec($args, $expect_rc=0, $label) {
+        
+        $prog = realpath(__DIR__ . '/../subaddress-derive-xmr');
+        $cmd = sprintf('%s %s 2>&1', $prog, $args);
+        
+        return $this->exec_cmd($cmd, $expect_rc, $label);
     }
     
     protected function read_json_file($path) {

@@ -2,7 +2,14 @@
 <?php
 
 /**
- * Entry point for hd-wallet-derive.
+ * Entry point for subaddress-derive-xmr CLI utility.
+ *
+ * copyright (c) Dan Libby 2019
+ * 
+ * Use of this software is subject to the terms of the
+ * GNU GENERAL PUBLIC LICENSE Version 3.
+ * See included LICENSE file or if missing
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
  *
  * Code in this file is related to interacting with the shell.
  */
@@ -40,7 +47,7 @@ function main()
 
         // Creates WalletDerive object
         $walletDerive = new WalletDerive($params);
-        if($params['gen-key']) {
+        if($params['gen-wallet']) {
             $result = $walletDerive->genRandomKeys();
             WalletDeriveReport::printResults($params, [$result]);
             return 0;
@@ -48,11 +55,15 @@ function main()
 
         if($params['mnemonic']) {
             $mnemonic = explode(' ', $params['mnemonic']);  // spaces already normalized.
-            if( !mnemonic::validate_checksum($mnemonic) ) {
+            $ws = mnemonic::get_wordset_by_name($params['mnemonic-ws']);
+            if( !mnemonic::validate_checksum($mnemonic, $ws['prefix_len'] )) {
                 throw new Exception("Invalid checksum.  One or more words is incorrect or missing.");
             }            
-            $seed = mnemonic::decode($mnemonic);
-            $seedinfo = ['seed' => $seed, 'mnemonic' => $params['mnemonic']];
+            $seed = mnemonic::decode($mnemonic, $params['mnemonic-ws']);
+            $seedinfo = ['seed' => $seed,
+                         'mnemonic' => $params['mnemonic'],
+                         'mnemonic-wordset' => $params['mnemonic-ws']
+            ];
             $keys = $walletDerive->genKeysFromSeed($seedinfo);
             
             if($params['wallet-keys']) {
@@ -66,7 +77,10 @@ function main()
         }
         else if($params['seed']) {
             $seed = trim($params['seed']);
-            $seedinfo = ['seed' => $seed, 'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed))];
+            $seedinfo = ['seed' => $seed,
+                         'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed, $params['mnemonic-ws'])),
+                         'mnemonic-wordset' => $params['mnemonic-ws']
+            ];
             $keys = $walletDerive->genKeysFromSeed($seedinfo);
             
             if($params['wallet-keys']) {

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * copyright (c) Dan Libby 2019
+ * 
+ * Use of this software is subject to the terms of the
+ * GNU GENERAL PUBLIC LICENSE Version 3.
+ * See included LICENSE file or if missing
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ */
+
 namespace App;
 
 require_once __DIR__  . '/../vendor/autoload.php';
@@ -100,7 +109,8 @@ class WalletDerive
         
         $data = [
             'seed' => $seed,
-            'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed)),   // $mnemonic,
+            'mnemonic' => implode(' ', mnemonic::encode_with_checksum($seed, $params['mnemonic-ws'])),   // $mnemonic,
+            'mnemonic-wordset' => $params['mnemonic-ws'],
         ];
         
         return $data;
@@ -116,6 +126,7 @@ class WalletDerive
         
         $data = ['seed' => $seedinfo['seed'],
                  'mnemonic' => $seedinfo['mnemonic'],
+                 'mnemonic-wordset' => $seedinfo['mnemonic-wordset'],
                  'view-key-private' => $priv['viewKey'],
                  'view-key-public' => $view_key_public,
                  'spend-key-private' => $priv['spendKey'],
@@ -143,11 +154,11 @@ class WalletDerive
         ];
     }
 
-    /* Returns all columns available for reports when using --gen-key
+    /* Returns all columns available for reports when using --gen-wallet
      */
-    static public function all_cols_genkey()
+    static public function all_cols_genwallet()
     {
-        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
+        return ['seed', 'mnemonic', 'mnemonic-wordset', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
     }
     
     
@@ -158,11 +169,11 @@ class WalletDerive
         return ['major_index', 'minor_index', 'address'];
     }
     
-    /* Returns default reporting columns when using --gen-key
+    /* Returns default reporting columns when using --gen-wallet
      */
-    static public function default_cols_genkey()
+    static public function default_cols_genwallet()
     {
-        return ['seed', 'mnemonic', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
+        return ['seed', 'mnemonic', 'mnemonic-wordset', 'view-key-private', 'view-key-public', 'spend-key-private', 'spend-key-public', 'address'];
     }
     
 }

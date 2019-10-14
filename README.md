@@ -8,9 +8,11 @@ from keys or from a mnemonic without installing full monero software.
 Derivation reports show major index (account ID), address index, and address.
 
 Input must be provided with these flags:
- --mnemonic : a mnemonic phrase to use an existing wallet
- --view-priv and --spend-pub : a private view key and a public spend key
- --gen-key : generates a new wallet seed and keys.
+
+    --mnemonic : a mnemonic phrase to use an existing wallet
+    --view-priv and --spend-pub : a private view key and a public spend key
+    --gen-wallet : generates a new wallet seed and keys.
+
 
 Reports are available in json, plaintext, and html. Columns can be changed or
 re-ordered via command-line.
@@ -25,15 +27,34 @@ deriving Bitcoin HD-Wallet addresses.
 ## Generate new wallet keys and master address
 
 ```
-$ ./subaddress-derive-xmr --gen-key  -g
+$ ./subaddress-derive-xmr --gen-wallet  -g
 {
     "seed": "66dcbb7490ee34dad1b04fa316b90ba1795ce70586298e2cc09455de1ae95273",
     "mnemonic": "focus aquarium luxury etched video smidgen sidekick because rounded cigar befit ritual layout visited wetsuit tobacco oars setup mystery insult females dauntless yodel jeopardy rounded",
+    "mnemonic-wordset": "english",
     "view-key-private": "25d014a444fb7a1e6836c680d3ec1b6eed628a29c3c85e0379fb89f53c4c610a",
     "view-key-public": "603ebe3bc1b2590c8a5e4caa90ee807cada4f881ad4f21f6c3653459781034c0",
     "spend-key-private": "eb1003ead738b471f5668a2e00e4f20e795ce70586298e2cc09455de1ae95203",
     "spend-key-public": "dce90ff7304d8b648bfbac69624b4c6562340c5c748a8a6d2c84bad3b76fe974",
     "address": "49zf2PF7nLSHpRwWcPG8ePHxYnR6eFmYuKG8Akpq5vFALTzZzMdv3kC36fCSP3UfFdMrY51QAs5NGiGuwXK6YMa3Nk7549x"
+}
+```
+
+## Generate new wallet using alternative wordset
+
+Here we specify --mnemonic-ws=japanese to generate a mnemonic in Japanese.
+
+```
+$ ./subaddress-derive-xmr --gen-wallet --mnemonic-ws=japanese -g
+{
+    "seed": "a6d5b4007d6b05d3a46b8bae199c8eef702c05f4fa219dbc80c84913da1c6a7e",
+    "mnemonic": "すくう あらわす あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう",
+    "mnemonic-wordset": "japanese",
+    "view-key-private": "48381703f1354d371678d1e8a63d2eef6cde8e6b406ff466902583024fe93c0a",
+    "view-key-public": "a528500e7bf5ea90e2da21c7e1dcb8bc2d23c1fca912dbcf050f26fa760fa3ea",
+    "spend-key-private": "2b0afc75c4b5846ac821c63903c7755d702c05f4fa219dbc80c84913da1c6a0e",
+    "spend-key-public": "900a3a401f61cea0cc9e9df0cc08c193a356a63c500a1c53bcc61be12dd2b808",
+    "address": "475hYFjWisFTtxNEvr8qTNRhGtXAJUzd9F1Mk9TznAYP2SsPUPXMcsjREaUE6GVhDqYUYg3gzne42bdMMq5ZuvxSTVQUiGG"
 }
 ```
 
@@ -59,7 +80,7 @@ to find the keys.
 +-------------+-------------+-------------------------------------------------------------------------------------------------+
 ```
 
-Note that the first address (0,0) is the same address that was generated with --gen-key.  This is the master address
+Note that the first address (0,0) is the same address that was generated with --gen-wallet.  This is the master address
 for the Monero wallet and is generated slightly differently from the other subaddresses.
 
 ## Same keys, different account
@@ -129,6 +150,25 @@ $ ./subaddress-derive-xmr --wallet-keys --mnemonic="school bunch godfather schoo
 }
 ```
 
+## Use a mnemonic with alternative wordset.
+
+Presently, it is necessary to specify the wordset with the --mnemonic-ws flag.
+
+```
+$ ./subaddress-derive-xmr --wallet-keys --mnemonic-ws=japanese --mnemonic="すくう あらわ す あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう" -g
+{
+    "seed": "a6d5b4007d6b05d3a46b8bae199c8eef702c05f4fa219dbc80c84913da1c6a7e",
+    "mnemonic": "すくう あらわす あんい だいじょうぶ ちしりょう ずっと おもちゃ てはい さんこう そんみん てんかい ちひょう ちたん かかえる おおどおり けわしい きかい はめつ すれちがう はっかく いきおい けねん しんか あらためる ちしりょう",
+    "mnemonic-wordset": "japanese",
+    "view-key-private": "48381703f1354d371678d1e8a63d2eef6cde8e6b406ff466902583024fe93c0a",
+    "view-key-public": "a528500e7bf5ea90e2da21c7e1dcb8bc2d23c1fca912dbcf050f26fa760fa3ea",
+    "spend-key-private": "2b0afc75c4b5846ac821c63903c7755d702c05f4fa219dbc80c84913da1c6a0e",
+    "spend-key-public": "900a3a401f61cea0cc9e9df0cc08c193a356a63c500a1c53bcc61be12dd2b808",
+    "address": "475hYFjWisFTtxNEvr8qTNRhGtXAJUzd9F1Mk9TznAYP2SsPUPXMcsjREaUE6GVhDqYUYg3gzne42bdMMq5ZuvxSTVQUiGG"
+}
+```
+
+
 ## Derive addresses from a seed
 
 We use the --seed flag
@@ -166,6 +206,21 @@ $ ./subaddress-derive-xmr --wallet-keys --seed="66dcbb7490ee34dad1b04fa316b90ba1
 # How address derivation works
 
 For background, please read [Monero's documentation](https://monerodocs.org/public-address/subaddress/).
+
+# Mnemonic wordsets
+
+As of this writing, the following mnemonic wordsets are supported:
+
+    english, electrum, japanese, spanish, portuguese
+    
+This list is available in the usage help.
+
+A particular wordset can be specified using the --mnemonic-ws flag
+which is recognized when generating a wallet, deriving subaddresses
+or displaying wallet info.
+
+The default is english.
+
 
 
 # Privacy and Security implications
@@ -221,6 +276,9 @@ The report may be printed in the following formats:
     --mnemonic=<words>   seed words
                            note: either key or nmemonic is required.
                            
+    --mnemonic-ws=<ws>   mnemonic wordset. default=english.
+                          [english, electrum, japanese, spanish, portuguese]
+                          
     --mnemonic-pw=<pw>   optional password for mnemonic. (unimplemented)
     
     --seed=<seed>        wallet seed in hex  
@@ -250,8 +308,8 @@ The report may be printed in the following formats:
                          'list' prints only the first column. see --cols
 
     --includeroot       include root key as first element of report.
-    --gen-key           generates a new key.
-    --gen-words=<n>     num words to generate. implies --gen-key.
+    --gen-wallet        generates keys and mnemonic for a new wallet.
+    --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
                            one of: [13, 25]
                            default = 25.
@@ -259,7 +317,6 @@ The report may be printed in the following formats:
     --logfile=<file>    path to logfile. if not present logs to stdout.
     --loglevel=<level>  debug,info,specialinfo,warning,exception,fatalerror
                           default = info
-
 ```
 
 
@@ -280,16 +337,18 @@ $ ./subaddress-derive-xmr --view-priv='55cdeaa9a36c83a130e42934fcc7bb7761945fa26
 # Thanks
 
 A big thank-you to the author(s) of [monero-integrations/monerophp](https://github.com/monero-integrations/monerophp/).
-This library does all the heavy lifting.
+This library does much of the heavy lifting.
 
 
 # Todos
 
-* implement --gen-words
+* implement --mnemonic-pw (mnemonic password)
+* auto detect mnemonic wordset from mnemonic words.
+* implement --gen-words (variable length mnemonics).
+* implement --network  (support testnet)
 * add more test cases
-* support testnet
-* support mnemonics in other languages
-* <strike>implement --gen-key</strike>
+* <strike>support mnemonics in other languages</strike>
+* <strike>implement --gen-wallet</strike>
 * <strike>implement --mnemonic</strike>
 * <strike>implement --seed</strike>
 * <strike>implement --wallet-keys</strike>

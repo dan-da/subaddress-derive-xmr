@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * copyright (c) Dan Libby 2019
+ * 
+ * Use of this software is subject to the terms of the
+ * GNU GENERAL PUBLIC LICENSE Version 3.
+ * See included LICENSE file or if missing
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ */
+
 namespace App\Utils;
 
 /***

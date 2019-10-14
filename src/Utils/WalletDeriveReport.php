@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * copyright (c) Dan Libby 2019
+ * 
+ * Use of this software is subject to the terms of the
+ * GNU GENERAL PUBLIC LICENSE Version 3.
+ * See included LICENSE file or if missing
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ */
+
 namespace App\Utils;
 
 use texttable;
@@ -82,7 +91,7 @@ class WalletDeriveReport
         if(count($results) == 1) {
             $results = $results[0];
         }
-        fwrite( $fh, json_encode( $results ) );
+        fwrite( $fh, json_encode( $results, JSON_UNESCAPED_UNICODE ) );
     }
 
     /* writes out results in jsonpretty format
@@ -91,7 +100,7 @@ class WalletDeriveReport
         if(count($results) == 1) {
             $results = $results[0];
         }
-        fwrite( $fh, json_encode( $results,  JSON_PRETTY_PRINT ) . "\n" );
+        fwrite( $fh, json_encode( $results,  JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) . "\n" );
     }
 
     /* writes out results in csv format

@@ -10,7 +10,7 @@
     },
 
     "require-dev": {
-        "dan-da/tester-php": "1.0.4"
+        "dan-da/tester-php": "1.0.5"
     },
 
     "autoload": {
