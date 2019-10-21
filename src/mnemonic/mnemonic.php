@@ -126,7 +126,7 @@ class mnemonic {
         $plen = $wordset['prefix_len'];
         $tw = $wordset['trunc_words'];
         $wcount = count($tw);
-        
+
         if (($plen === 0 && ($wcount % 3 !== 0)) || ($plen > 0 && ($wcount % 3 === 2))) {
             throw new \Exception("too few words");
         }
@@ -164,7 +164,7 @@ class mnemonic {
      */
     static public function get_wordset_by_name($name = null) {
         $name = $name ?: 'english';
-        $wordset = get_wordsets();
+        $wordset = self::get_wordsets();
         $ws = @$wordset[$name];
         if( !$ws ) {
             throw new \Exception("Invalid wordset $name");
@@ -180,7 +180,7 @@ class mnemonic {
      * but in theory that should never happen.
      */
     static public function find_wordset_by_mnemonic($mnemonic) {
-        $sets = get_wordsets();
+        $sets = self::get_wordsets();
         $matched_wordsets = [];
         foreach($sets as $ws_name => $ws) {
             
@@ -213,9 +213,60 @@ class mnemonic {
     /**
      * returns list of available wordsets
      */
+    static public function get_wordset_list() {
+        return array_keys( self::get_wordsets() );
+    }
+    
+    /**
+     * This function returns all available wordsets.
+     *
+     * Each wordset is in a separate file in wordsets/*.ws.php
+     */
     static public function get_wordsets() {
-        return array_keys( get_wordsets() );        
-    }    
+        
+        static $wordsets = null;
+        if( $wordsets ) {
+            return $wordsets;
+        }
+        
+        $wordsets = [];
+        $files = glob(__DIR__ . '/wordsets/*.ws.php');
+        foreach($files as $f) {
+            require_once($f);
+    
+            list($wordset) = explode('.', basename($f));
+            $classname = __NAMESPACE__ . '\\' . $wordset;
+            
+            $wordsets[$wordset] = [
+                'name' => $classname::name(),
+                'english_name' => $classname::english_name(),
+                'prefix_len' => $classname::prefix_length(),
+                'words' => $classname::words(),
+            ];
+        }
+     
+        // This loop adds the key 'trunc_words' to each wordset, which contains
+        // a pre-generated list of words truncated to length prefix_len.
+        // This list is optimized for fast lookup of the truncated word
+        // with the format being [ <ctruncated_word> => <index> ].
+        // This optimization assumes/requires that each truncated word is unique.
+        // A further optimization could be to only pre-generate trunc_words on the fly
+        // when a wordset is actually used, rather than for all wordsets.
+        foreach($wordsets as &$ws) {
+            
+            $tw = [];
+            $plen = $ws['prefix_len'];
+            $i = 0;
+            foreach( $ws['words'] as $w) {
+                $key = $plen == 0 ? $w : mb_substr($w, 0, $plen);
+                $tw[$key] = $i++;
+            }
+    
+            $ws['trunc_words'] = $tw;
+        }
+        return $wordsets;
+    }
+    
 }
 
 
@@ -247,55 +298,6 @@ interface wordset {
 };
 
 
-/**
- * This function returns all available wordsets.
- *
- * Each wordset is in a separate file in wordsets/*.ws.php
- */
-function get_wordsets() {
-    
-    static $wordsets = null;
-    if( $wordsets ) {
-        return $wordsets;
-    }
-    
-    $wordsets = [];
-    $files = glob(__DIR__ . '/wordsets/*.ws.php');
-    foreach($files as $f) {
-        require_once($f);
-
-        list($wordset) = explode('.', basename($f));
-        $classname = __NAMESPACE__ . '\\' . $wordset;
-        
-        $wordsets[$wordset] = [
-            'prefix_len' => $classname::prefix_length(),
-            'words' => $classname::words(),
-        ];
-    }
- 
-    // This loop adds the key 'trunc_words' to each wordset, which contains
-    // a pre-generated list of words truncated to length prefix_len.
-    // This list is optimized for fast lookup of the truncated word
-    // with the format being [ <ctruncated_word> => <index> ].
-    // This optimization assumes/requires that each truncated word is unique.
-    // A further optimization could be to only pre-generate trunc_words on the fly
-    // when a wordset is actually used, rather than for all wordsets.
-    foreach($wordsets as &$ws) {
-        
-        $tw = [];
-        $plen = $ws['prefix_len'];
-        $i = 0;
-        foreach( $ws['words'] as $w) {
-            $key = $plen == 0 ? $w : mb_substr($w, 0, $plen);
-            $tw[$key] = $i++;
-        }
-
-        $ws['trunc_words'] = $tw;
-    }
-    return $wordsets;
-}
-
-
 
 // Example usage.
 // execs only if this file called directly, not when included.
@@ -316,7 +318,7 @@ if (count(get_included_files()) == 1) {
     else if(count($argv) == 2) {
         switch($argv[1]) {
             case 'wordsets':
-                echo implode("\n", mnemonic::get_wordsets()) . "\n";
+                echo implode("\n", mnemonic::get_wordset_list()) . "\n";
                 break;
         
             default:
