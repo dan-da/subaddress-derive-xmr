@@ -14,6 +14,8 @@ namespace App\Utils;
 
 use Exception;
 use App\WalletDerive;
+use danda\monero\mnemonic\mnemonic;
+use App\Utils\WalletDeriveReport;
 
 class Util
 {
@@ -40,6 +42,7 @@ class Util
             'list-cols',
             'gen-wallet',
             'wordset:',
+            'help-wordsets',
             'gen-words:',
             'version',
             'help',
@@ -73,10 +76,15 @@ class Util
         $params['cols'] = static::getCols( $params );
         $params['format'] = @$params['format'] ?: (self::report_type($params) == 'keys' ? 'jsonpretty' : 'txt');
         
+        if( isset($params['help-wordsets']) ) {
+            static::print_help_wordsets($params);
+            return [$params, 1];
+        }
+        
         if(isset($params['help']) || !isset($params['g'])) {
             static::printHelp();
             return [$params, 1];
-        }
+        }        
         
         // TODO
         if(@$params['logfile']) {
@@ -140,6 +148,23 @@ class Util
         $version = @file_get_contents($versionFile);
         echo $version ?: 'version unknown' . "\n";
     }
+    
+    public static function print_help_wordsets($params) {
+        
+        $wordsets = mnemonic::get_wordsets();
+        
+        $r = [];
+        foreach($wordsets as $id => $ws) {
+            $r[] = [
+                'wordset' => $id,
+                'name' => $ws['name'],
+                'english_name' => $ws['english_name'],
+            ];
+        }
+        
+        $params['cols'] = array_keys($r[0]);
+        WalletDeriveReport::printResults($params, $r);
+    }
 
 
     /* prints CLI help text
@@ -201,8 +226,9 @@ class Util
     --gen-wallet        generates keys and mnemonic for a new wallet.
     
     --wordset=<ws>      wordset for generating wallet mnemonic. default=english.
-                          [english, electrum, japanese, spanish, portuguese]
                           applies only to --gen-wallet and --seed
+                          
+    --help-wordsets     displays list of available wordsets.
     
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
