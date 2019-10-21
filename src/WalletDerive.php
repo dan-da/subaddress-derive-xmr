@@ -16,7 +16,7 @@ require_once __DIR__  . '/../vendor/autoload.php';
 
 use Exception;
 use App\Utils\MyLogger;
-use App\mnemonic;
+use danda\monero\mnemonic\mnemonic;
 
 // For HD-Wallet Key Derivation
 use MoneroIntegrations\MoneroPhp;

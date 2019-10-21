@@ -20,7 +20,7 @@ class mnemonic extends tests_common {
         foreach(explode(' ', self::$mnemonic) as $w) {
             $arg_words[] = escapeshellarg($w);
         }
-        $cmd = sprintf('php %s/../src/mnemonic.php %s', escapeshellarg(__DIR__), implode(' ', $arg_words) );
+        $cmd = sprintf('php %s/../src/mnemonic/mnemonic.php %s', escapeshellarg(__DIR__), implode(' ', $arg_words) );
         $seed = $this->exec_cmd($cmd, 0, 'seed from mnemonic cmd');
         
         $this->eq($seed, self::$seed, 'seed from mnemonic');
@@ -28,7 +28,7 @@ class mnemonic extends tests_common {
 
     protected function test_mnemonic_class_decode() {
         
-        $cmd = sprintf('php %s/../src/mnemonic.php %s', escapeshellarg(__DIR__), escapeshellarg(self::$seed) );
+        $cmd = sprintf('php %s/../src/mnemonic/mnemonic.php %s', escapeshellarg(__DIR__), escapeshellarg(self::$seed) );
         $mnemonic = $this->exec_cmd($cmd, 0, 'mnemonic from seed cmd');
         
         $this->eq($mnemonic, self::$mnemonic, 'mnemonic from seed');
