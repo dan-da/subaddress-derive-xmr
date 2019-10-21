@@ -32,7 +32,7 @@ class english_old implements wordset {
      * and the entire word must be used instead.
      */    
     static public function prefix_length() : int {
-        return 4;  // first 4 letters of each word in wordset is unique.
+        return 0;  // require entire word.
     }
     
     /* Returns an array of all words in the wordset.
