@@ -210,17 +210,40 @@ For background, please read [Monero's documentation](https://monerodocs.org/publ
 
 # Mnemonic wordsets
 
-As of this writing, the following mnemonic wordsets are supported:
+The wordset list can be obtained with the --help-wordsets flag.
 
-    english, electrum, japanese, spanish, portuguese
-    
-This list is available in the usage help.
+```
+$ ./subaddress-derive-xmr --help-wordsets
++--------------------+-----------------+----------------------+
+| wordset            | name            | english_name         |
++--------------------+-----------------+----------------------+
+| chinese_simplified | 简体中文 (中国)   | Chinese (simplified) |
+| dutch              | Nederlands      | Dutch                |
+| english            | English         | English              |
+| english_old        | EnglishOld      | English (old)        |
+| esperanto          | Esperanto       | Esperanto            |
+| french             | Français        | French               |
+| german             | Deutsch         | German               |
+| italian            | Italiano        | Italian              |
+| japanese           | 日本語           | Japanese             |
+| lojban             | Lojban          | Lojban               |
+| portuguese         | Português       | Portuguese           |
+| russian            | русский язык    | Russian              |
+| spanish            | Español         | Spanish              |
++--------------------+-----------------+----------------------+
+```
 
-A particular wordset can be specified using the --wordset flag
-which is recognized when generating a wallet or displaying wallet info
-from a seed.
+A particular wordset can be specified using the --wordset flag with a value from
+the wordset column.  This flag is recognized when generating a wallet or
+displaying wallet info from a seed.
 
-The default wordset is english.
+When a list of words is provided with the --mnemonic flag, the wordset is
+automatically recognized and --wordset flag is ignored.
+
+note: These wordsets were obtained directly from the official monero
+source code [here](https://github.com/monero-project/monero/tree/master/src/mnemonics).  (See *.h files)
+
+The default wordset is english.  english_old is a wordset from electrum.
 
 
 
@@ -308,8 +331,9 @@ The report may be printed in the following formats:
     --gen-wallet        generates keys and mnemonic for a new wallet.
     
     --wordset=<ws>      wordset for generating wallet mnemonic. default=english.
-                          [english, electrum, japanese, spanish, portuguese]
                           applies only to --gen-wallet and --seed
+                          
+    --help-wordsets     displays list of available wordsets.
     
     --gen-words=<n>     num words to generate. implies --gen-wallet.
                            (unimplemented)
