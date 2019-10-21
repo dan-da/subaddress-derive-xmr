@@ -220,6 +220,17 @@ class mnemonic {
 
 
 interface wordset {
+
+    /* Returns name of wordset in the wordset's native language.
+     * This is a human-readable string, and should be capitalized
+     * if the language supports it.
+     */
+    static public function name() : string;
+
+    /* Returns name of wordset in english.    
+     * This is a human-readable string, and should be capitalized
+     */
+    static public function english_name() : string;
     
     /* Returns integer indicating length of unique prefix,
      * such that each prefix of this length is unique across
@@ -299,16 +310,27 @@ function get_wordsets() {
 
 if (count(get_included_files()) == 1) {
     
-    $wordset_name = 'english';
-    $wordset = mnemonic::get_wordset_by_name($wordset_name);
     if (count($argv) == 1) {
         echo "I need arguments: a hex string to encode, or a list of words to decode\n";
     }
-    else if ((count($argv) == 2)) {
-        echo implode(' ', mnemonic::encode_with_checksum($argv[1], $wordset_name)) . "\n";
+    else if(count($argv) == 2) {
+        switch($argv[1]) {
+            case 'wordsets':
+                echo implode("\n", mnemonic::get_wordsets()) . "\n";
+                break;
+        
+            default:
+                echo implode(' ', mnemonic::encode_with_checksum($argv[1], 'english')) . "\n";
+                break;
+        }
+    }
+    else if(count($argv) == 3) {
+        echo implode(' ', mnemonic::encode_with_checksum($argv[1], $argv[2])) . "\n";
     }
     else {
         $argwords = array_slice($argv, 1);
+        $wordset_name = mnemonic::find_wordset_by_mnemonic($argwords);
+        $wordset = mnemonic::get_wordset_by_name($wordset_name);        
         if( count($argwords) == 25 && !mnemonic::validate_checksum($argwords, $wordset['prefix_len']) ) {
             echo "Invalid checksum\n";
         }
