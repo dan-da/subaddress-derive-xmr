@@ -6,6 +6,7 @@
         "php": ">=5.5",
         "dan-da/texttable-php": "1.0.4",
         "dan-da/strictmode-php": "1.0.1",
+        "dan-da/monero-mnemonic-php": "1.0.0",
         "monero-integrations/monerophp": "dev-master#960eaf4b581c90d3b18e7324089d1e80d93c81ef"
     },
 
@@ -15,8 +16,7 @@
 
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "danda\\monero\\mnemonic\\": "src/mnemonic"
+            "App\\": "src/"
         }
     }
 }
