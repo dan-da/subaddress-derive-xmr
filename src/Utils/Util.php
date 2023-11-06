@@ -293,14 +293,14 @@ END;
      */
     public static function stripWhitespace( $str )
     {
-        return preg_replace('/\s+/', '', $str);
+        return @preg_replace('/\s+/', '', $str);
     }
     
     /* compress each whitespace to a single space, and trim ends.
      */
     public static function normalize_whitespace( $str )
     {
-        return trim(preg_replace('/\s+/', ' ', $str));
+        return trim(@preg_replace('/\s+/', ' ', $str));
     }
     
 }

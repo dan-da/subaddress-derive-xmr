@@ -40,12 +40,12 @@ class mnemonic_wordsets extends tests_common {
             ];
             $result1 = $this->derive_params( $params );
 
-            $params = ['mnemonic' => $result1['mnemonic'],
+            $params = ['mnemonic' => @$result1['mnemonic'],
                        'wallet-keys' => null,
             ];
             $result2 = $this->derive_params( $params );
             
-            $this->eq($result2['seed'], self::$map['english']['seed'], "verify decode(encode(seed)) == seed for $ws");
+            $this->eq(@$result2['seed'], @self::$map['english']['seed'], "verify decode(encode(seed)) == seed for $ws");
         }
     }
     

@@ -65,7 +65,6 @@ abstract class tests_common extends tester\test_base {
         
         $prog = realpath(__DIR__ . '/../subaddress-derive-xmr');
         $cmd = sprintf('%s %s 2>&1', $prog, $args);
-        
         return $this->exec_cmd($cmd, $expect_rc, $label);
     }
     
